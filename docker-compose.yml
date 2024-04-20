@@ -1,9 +1,9 @@
 version: '3'
+
 services:
   postgres:
     image: postgres
     container_name: back-tcc
-    # restart: always
     environment:
       POSTGRES_USER: tcc
       POSTGRES_PASSWORD: tcc
@@ -11,4 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

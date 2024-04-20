@@ -1,9 +1,15 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table
+@Table({
+  tableName: 'client',
+  timestamps: true,
+})
 export class Client extends Model<Client> {
-  @Column({ primaryKey: true, autoIncrement: true, type: DataType.STRING })
-  id: string;
+  @Column({
+    primaryKey: true,
+    type: DataType.NUMBER,
+  })
+  id: number;
 
   @Column({ type: DataType.STRING, allowNull: false })
   email: string;
@@ -19,12 +25,6 @@ export class Client extends Model<Client> {
 
   @Column({ type: DataType.DATE, allowNull: false })
   data_nascimento: Date;
-
-  @Column({ type: DataType.STRING, allowNull: false })
-  instituicao: string;
-
-  @Column({ type: DataType.STRING, allowNull: false })
-  nivelDeEnsino: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
   cep: string;
