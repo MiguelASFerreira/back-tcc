@@ -1,10 +1,10 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'client',
+  tableName: 'empresa',
   timestamps: true,
 })
-export class Client extends Model<Client> {
+export class Empresa extends Model<Empresa> {
   @Column({
     primaryKey: true,
     type: DataType.NUMBER,
@@ -21,23 +21,11 @@ export class Client extends Model<Client> {
   nome: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  cpf: string;
-
-  @Column({ type: DataType.DATE, allowNull: false })
-  data_nascimento: Date;
+  image_url: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  cep: string;
+  telefone1: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  n_casa: string;
-
-  @Column({ type: DataType.STRING, allowNull: false })
-  bairro: string;
-
-  @Column({ type: DataType.STRING, allowNull: false })
-  municipio: string;
-
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  telefone: number;
+  telefone2: string;
 }

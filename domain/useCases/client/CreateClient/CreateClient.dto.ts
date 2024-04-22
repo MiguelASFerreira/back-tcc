@@ -5,7 +5,7 @@ export type InputCreateClient = {
   cpf: string;
   data_nascimento: string;
   cep: string;
-  n_casa: number;
+  n_casa: string;
   bairro: string;
   municipio: string;
   telefone: number;

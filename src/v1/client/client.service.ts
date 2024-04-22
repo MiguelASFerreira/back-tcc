@@ -4,7 +4,8 @@ import CreateClient from 'domain/useCases/client/CreateClient/CreateClient';
 import { Sequelize } from 'sequelize-typescript';
 import ClientRepositoryInSequelize from 'src/adapters/repository/client/ClientRepositoryInSequelize';
 import { CreateClientBody } from './dto/client.dto';
-import FindByEmail from 'domain/useCases/client/FindByEmail/FindByEmail';
+import FindByEmailUser from 'domain/useCases/client/FindByEmailUser/FindByEmailUser';
+import FindByIdUser from 'domain/useCases/client/FindByIdUser/FindByIdUser';
 
 @Injectable()
 export class ClientService {
@@ -18,13 +19,23 @@ export class ClientService {
     return useCase.execute(data);
   }
 
-  findByEmail(email: string): Promise<Client> {
+  findByEmailUser(email: string): Promise<Client> {
     const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
       this.sequelize,
     );
 
-    const useCase = new FindByEmail(clientRepositoryInSequelize);
+    const useCase = new FindByEmailUser(clientRepositoryInSequelize);
 
     return useCase.execute(email);
+  }
+
+  findByIdUser(id: number): Promise<Client> {
+    const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new FindByIdUser(clientRepositoryInSequelize);
+
+    return useCase.execute(id);
   }
 }

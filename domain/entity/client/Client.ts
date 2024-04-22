@@ -1,11 +1,12 @@
 export default class Client {
+  readonly id?: number;
   readonly email: string;
   readonly password: string;
   readonly nome: string;
   readonly cpf: string;
   readonly data_nascimento: string;
   readonly cep: string;
-  readonly n_casa: number;
+  readonly n_casa: string;
   readonly bairro: string;
   readonly municipio: string;
   readonly telefone: number;
@@ -17,7 +18,7 @@ export default class Client {
     cpf: string,
     data_nascimento: string,
     cep: string,
-    n_casa: number,
+    n_casa: string,
     bairro: string,
     municipio: string,
     telefone: number,

@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientModule } from './v1/client/client.module';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthModule } from './v1/auth/auth.module';
+import { EmpresaModule } from './v1/empresa/empresa.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
       password: process.env.DB_PASSWORD,
     }),
     ClientModule,
+    AuthModule,
+    EmpresaModule,
   ],
   controllers: [],
   providers: [],

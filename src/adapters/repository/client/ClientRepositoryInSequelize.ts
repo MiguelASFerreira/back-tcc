@@ -2,11 +2,14 @@ import Client from 'domain/entity/client/Client';
 import ClientRepository from 'domain/entity/client/ClientRepository';
 import { QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
+import * as bcrypt from 'bcrypt';
 
 export default class ClientRepositoryInSequelize implements ClientRepository {
   constructor(private readonly sequelize: Sequelize) {}
 
   async createClient(data: Client): Promise<Client> {
+    const hashPassword = await bcrypt.hash(data.password, 10);
+
     const sql = `
     INSERT INTO cliente (email, password, nome, cpf, data_nascimento, cep, n_casa, bairro, municipio, telefone) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);    
@@ -16,7 +19,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
       type: QueryTypes.INSERT,
       replacements: [
         data.email,
-        data.password,
+        hashPassword,
         data.nome,
         data.cpf,
         data.data_nascimento,
@@ -31,7 +34,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     return data;
   }
 
-  async findByEmail(email: string): Promise<Client> {
+  async findByEmailUser(email: string): Promise<Client> {
     const sql = `
       SELECT 
         * 
@@ -44,7 +47,22 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
       replacements: [email],
     });
 
-    console.log(result);
+    return result;
+  }
+
+  async findByIdUser(id: number): Promise<Client> {
+    const sql = `
+      SELECT 
+        * 
+      FROM cliente c 
+      WHERE c.id = ?
+    `;
+
+    const [result]: any = await this.sequelize.query(sql, {
+      type: QueryTypes.SELECT,
+      replacements: [id],
+    });
+
     return result;
   }
 }
