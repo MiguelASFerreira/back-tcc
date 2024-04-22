@@ -20,7 +20,7 @@ export class CreateClientBody {
   cep: string;
 
   @ApiProperty()
-  n_casa: number;
+  n_casa: string;
 
   @ApiProperty()
   bairro: string;

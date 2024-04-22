@@ -2,5 +2,6 @@ import Client from './Client';
 
 export default interface ClientRepository {
   createClient(data: Client): Promise<Client>;
-  findByEmail(email: string): Promise<Client>;
+  findByEmailUser(email: string): Promise<Client>;
+  findByIdUser(id: number): Promise<Client>;
 }

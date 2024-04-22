@@ -1,15 +1,20 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Logger,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import Client from 'domain/entity/client/Client';
 import { ClientService } from './client.service';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateClientBody, FindByEmailBody } from './dto/client.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CreateClientBody } from './dto/client.dto';
+import { Request } from 'express';
+import { AuthMiddleware } from 'src/middleware/auth.middleware';
 
 @Controller('client')
 @ApiTags('Cliente')
@@ -17,10 +22,14 @@ export class ClientController {
   private readonly logger: Logger = new Logger();
   constructor(private readonly clientService: ClientService) {}
 
-  @Post('/email')
-  async findByEmail(@Body() data: FindByEmailBody): Promise<Client> {
+  @Get('')
+  @UseGuards(new AuthMiddleware())
+  @ApiBearerAuth()
+  async findById(@Req() req: Request): Promise<Client> {
     try {
-      const userExist = await this.clientService.findByEmail(data.email);
+      const id = req.user.id;
+
+      const userExist = await this.clientService.findByIdUser(id);
 
       if (!userExist) {
         throw new HttpException(
