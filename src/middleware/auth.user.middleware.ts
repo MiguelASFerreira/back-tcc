@@ -7,7 +7,7 @@ interface DecodedToken {
 }
 
 @Injectable()
-export class AuthMiddleware implements CanActivate {
+export class AuthUserMiddleware implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
     const res = context.switchToHttp().getResponse<Response>();

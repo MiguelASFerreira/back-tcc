@@ -14,7 +14,7 @@ import { ClientService } from './client.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateClientBody } from './dto/client.dto';
 import { Request } from 'express';
-import { AuthMiddleware } from 'src/middleware/auth.middleware';
+import { AuthUserMiddleware } from 'src/middleware/auth.user.middleware';
 
 @Controller('client')
 @ApiTags('Cliente')
@@ -23,7 +23,7 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Get('')
-  @UseGuards(new AuthMiddleware())
+  @UseGuards(new AuthUserMiddleware())
   @ApiBearerAuth()
   async findById(@Req() req: Request): Promise<Client> {
     try {
@@ -48,6 +48,15 @@ export class ClientController {
   @Post()
   async createClient(@Body() data: CreateClientBody): Promise<Client> {
     try {
+      const emailExists = await this.clientService.findByEmailUser(data.email);
+
+      if (emailExists) {
+        throw new HttpException(
+          'Email já cadastrado',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
       return await this.clientService.createClient(data);
     } catch (error) {
       this.logger.error(error.message);
