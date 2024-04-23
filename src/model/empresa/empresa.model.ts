@@ -21,6 +21,9 @@ export class Empresa extends Model<Empresa> {
   nome: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
+  dono: string;
+
+  @Column({ type: DataType.STRING, allowNull: false })
   image_url: string;
 
   @Column({ type: DataType.STRING, allowNull: false })

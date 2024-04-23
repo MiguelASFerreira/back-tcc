@@ -3,5 +3,8 @@ declare namespace Express {
     user: {
       id: number;
     };
+    empresa: {
+      id: number;
+    };
   }
 }
