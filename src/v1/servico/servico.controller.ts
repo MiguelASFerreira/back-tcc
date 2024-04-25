@@ -7,7 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('servico')
 @ApiTags('Serviço')
 export class ServicoController {
-    private readonly logger: Logger = new Logger();
+  private readonly logger: Logger = new Logger();
   constructor(private readonly servicoService: ServicoService) {}
 
   @Post()
