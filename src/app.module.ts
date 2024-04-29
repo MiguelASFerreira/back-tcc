@@ -6,6 +6,7 @@ import { AuthModule } from './v1/auth/auth.module';
 import { EmpresaModule } from './v1/empresa/empresa.module';
 import { ServicoModule } from './v1/servico/servico.module';
 import { ServicoOfertaModule } from './v1/servico_oferta/servico_oferta.module';
+import { ContratoModule } from './v1/contrato/contrato.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ServicoOfertaModule } from './v1/servico_oferta/servico_oferta.module';
     EmpresaModule,
     ServicoModule,
     ServicoOfertaModule,
+    ContratoModule,
   ],
   controllers: [],
   providers: [],
