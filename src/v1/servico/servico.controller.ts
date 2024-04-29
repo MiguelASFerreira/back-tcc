@@ -2,7 +2,7 @@ import { Body, Controller, Post, Logger, HttpException, HttpStatus } from '@nest
 import Servico from 'domain/entity/servico/Servico';
 import { ServicoService } from './servico.service';
 import { CreateServicoBody } from './dto/servico.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @Controller('servico')
 @ApiTags('Serviço')
@@ -11,6 +11,9 @@ export class ServicoController {
   constructor(private readonly servicoService: ServicoService) {}
 
   @Post()
+  @ApiOperation({
+    summary: 'Criação do serviço'
+  })
   async createServico(@Body() data: CreateServicoBody): Promise<Servico> {
     try {
         return await this.servicoService.createServico(data);

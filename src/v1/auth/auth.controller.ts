@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 import { AuthDTO } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -19,6 +19,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/client')
+  @ApiOperation({
+    summary: 'Autentificação de usuário'
+  })
   async signInClient(@Body() data: AuthDTO) {
     try {
       const user = await this.authService.findByEmailUser(data.email);
@@ -70,6 +73,9 @@ export class AuthController {
   }
 
   @Post('/empresa')
+  @ApiOperation({
+    summary: 'Autentificação da empresa'
+  })
   async signInEmpresa(@Body() data: AuthDTO) {
     try {
       const empresa = await this.authService.findByEmailEmpresa(data.email);

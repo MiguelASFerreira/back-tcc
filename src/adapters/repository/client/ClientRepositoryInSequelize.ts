@@ -65,4 +65,71 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
 
     return result;
   }
+
+  async updateClient(id_client: number, data: Client): Promise<Client> {
+    const replacements = [];
+
+    let updateClause = '';
+    if (data.email) {
+        updateClause += 'email = ?,';
+        replacements.push(data.email);
+    }
+    if (data.telefone) {
+        updateClause += 'telefone = ?,';
+        replacements.push(data.telefone);
+    }
+    if (data.municipio) {
+        updateClause += 'municipio = ?,';
+        replacements.push(data.municipio);
+    }
+    if (data.bairro) {
+        updateClause += 'bairro = ?,';
+        replacements.push(data.bairro);
+    }
+    if (data.n_casa) {
+        updateClause += 'n_casa = ?,';
+        replacements.push(data.n_casa);
+    }
+    if (data.cep) {
+        updateClause += 'cep = ?,';
+        replacements.push(data.cep);
+    }
+    if (data.cpf) {
+        updateClause += 'cpf = ?,';
+        replacements.push(data.cpf);
+    }
+    if (data.data_nascimento) {
+        updateClause += 'data_nascimento = ?,';
+        replacements.push(data.data_nascimento);
+    }
+    if (data.nome) {
+        updateClause += 'nome = ?,';
+        replacements.push(data.nome);
+    }
+    if (data.password) {
+        const hashPassword = await bcrypt.hash(data.password, 10);
+        updateClause += 'password = ?,';
+        replacements.push(hashPassword);
+    }
+
+    if (updateClause.length > 0) {
+        updateClause = updateClause.slice(0, -1);
+    }
+
+    const sql = `
+        UPDATE cliente c
+        SET 
+            ${updateClause}
+        WHERE 
+            c.id = ?
+    `;
+    
+    await this.sequelize.query(sql, {
+        type: QueryTypes.UPDATE,
+        replacements: [replacements, id_client]
+    });
+
+    return data;
+}
+
 }
