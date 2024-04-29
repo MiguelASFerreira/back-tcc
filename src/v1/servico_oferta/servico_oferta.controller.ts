@@ -15,7 +15,7 @@ import { CreateServicoOfertaBody, FilterServicoOfertaQuery } from './dto/servico
 import { Request } from 'express';
 import {ServicoOferta} from 'domain/entity/servico_oferta/ServicoOferta';
 import { AuthEmpresaMiddleware } from 'src/middleware/auth.empresa.middleware';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('servico-oferta')
 @ApiTags('Seviço Oferta')
@@ -24,6 +24,9 @@ export class ServicoOfertaController {
   constructor(private readonly servicoOfertaService: ServicoOfertaService) {}
 
   @Get('')
+  @ApiOperation({
+    summary: 'Filtros de serviço oferta'
+  })
   async filterServicoOferta(@Query() query: FilterServicoOfertaQuery) {
     try {
       return await this.servicoOfertaService.filterServicoOferta(query);
@@ -36,6 +39,9 @@ export class ServicoOfertaController {
   @Post('')
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Criação do servico oferta'
+  })
   async createServicoOferta(
     @Body() data: CreateServicoOfertaBody,
     @Req() req: Request,

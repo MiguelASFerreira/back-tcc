@@ -5,14 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import Client from 'domain/entity/client/Client';
 import { ClientService } from './client.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateClientBody } from './dto/client.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateClientBody, UpdateClientBody } from './dto/client.dto';
 import { Request } from 'express';
 import { AuthUserMiddleware } from 'src/middleware/auth.user.middleware';
 
@@ -25,6 +26,9 @@ export class ClientController {
   @Get('')
   @UseGuards(new AuthUserMiddleware())
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Trazer detalhes do usuário pelo token'
+  })
   async findById(@Req() req: Request): Promise<Client> {
     try {
       const id = req.user.id;
@@ -46,6 +50,9 @@ export class ClientController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Criação do usuário'
+  })
   async createClient(@Body() data: CreateClientBody): Promise<Client> {
     try {
       const emailExists = await this.clientService.findByEmailUser(data.email);
@@ -62,5 +69,36 @@ export class ClientController {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @Patch()
+  @UseGuards(new AuthUserMiddleware())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Atualizar detalhes do usuário pelo token'
+  })
+  async updateClient(@Body() data: UpdateClientBody, @Req() req: Request) {
+    try {
+      const userId = req.user.id;
+
+      const userExist = await this.clientService.findByIdUser(userId);
+
+      if (!userExist) {
+        throw new HttpException(
+          'Usuário não encontrado',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      const updateClient = await this.clientService.updateClient(userId, data)
+
+      return updateClient;
+
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
   }
 }

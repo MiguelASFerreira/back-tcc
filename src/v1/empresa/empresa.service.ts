@@ -6,6 +6,7 @@ import EmpresaRepositroyInSequelize from 'src/adapters/repository/empresa/Empres
 import CreateEmpresa from 'domain/useCases/empresa/CreateEmpresa/CreateEmpresa';
 import FindByIdEmpresa from 'domain/useCases/empresa/FindByIdEmpresa/FindByIdEmpresa';
 import FindByEmailEmpresa from 'domain/useCases/empresa/FindByEmailEmpresa/FindByEmailEmpresa';
+import UpdateEmpresa from 'domain/useCases/empresa/UpdateEmpresa/UpdateEmpresa';
 
 @Injectable()
 export class EmpresaService {
@@ -39,5 +40,15 @@ export class EmpresaService {
     const useCase = new FindByEmailEmpresa(empresaRepositoryInSequelize);
 
     return useCase.execute(email);
+  }
+
+  updateEmpresa(id: number, data: Empresa): Promise<Empresa> {
+    const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new UpdateEmpresa(empresaRepositoryInSequelize);
+
+    return useCase.execute(id, data);
   }
 }

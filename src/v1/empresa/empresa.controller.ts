@@ -5,14 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
-import { CreateEmpresaBody } from './dto/empresa.dto';
+import { CreateEmpresaBody, UpdateEmpresaBody } from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthEmpresaMiddleware } from 'src/middleware/auth.empresa.middleware';
 
@@ -25,6 +26,9 @@ export class EmpresaController {
   @Get('')
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Trazer detalhes da empresa pelo token'
+  })
   async findById(@Req() req: Request): Promise<Empresa> {
     try {
       const id = req.empresa.id;
@@ -46,6 +50,9 @@ export class EmpresaController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Criar Empresa'
+  })
   async createEmpresa(@Body() data: CreateEmpresaBody) {
     try {
       const emailExists = await this.empresaService.findByEmailEmpresa(
@@ -60,6 +67,34 @@ export class EmpresaController {
       }
 
       return await this.empresaService.createEmpresa(data);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Patch('')
+  @UseGuards(new AuthEmpresaMiddleware())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Atualizar detalhes da empresa pelo token'
+  })
+  async updateEmpresa(@Body() data: UpdateEmpresaBody, @Req() req: Request): Promise<Empresa> {
+    try {
+      const userId = req.empresa.id;
+
+      const empresaExist = await this.empresaService.findByIdEmpresa(userId);
+
+      if (!empresaExist) {
+        throw new HttpException(
+          'Usuário não encontrado',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      const updateEmpresa = await this.empresaService.updateEmpresa(userId, data);
+
+      return updateEmpresa;
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

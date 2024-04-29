@@ -14,7 +14,7 @@ import { CreateContratoBody } from './dto/contrato.dto';
 import Contrato from 'domain/entity/contrato/Contrato';
 import { Request } from 'express';
 import { AuthUserMiddleware } from 'src/middleware/auth.user.middleware';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @Controller('contrato')
 @ApiTags('Contrato')
@@ -25,6 +25,9 @@ export class ContratoController {
   @Get()
   @UseGuards(new AuthUserMiddleware())
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Trazer todos os contratos do usuário'
+  })
   async findContratoUser(@Req() req: Request): Promise<Contrato> {
     try {
       const userId = req.user.id;
@@ -38,6 +41,9 @@ export class ContratoController {
   @Post()
   @UseGuards(new AuthUserMiddleware())
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Criação do contrato'
+  })
   async createContrato(
     @Req() req: Request,
     @Body() data: CreateContratoBody,

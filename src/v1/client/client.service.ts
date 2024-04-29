@@ -6,6 +6,7 @@ import ClientRepositoryInSequelize from 'src/adapters/repository/client/ClientRe
 import { CreateClientBody } from './dto/client.dto';
 import FindByEmailUser from 'domain/useCases/client/FindByEmailUser/FindByEmailUser';
 import FindByIdUser from 'domain/useCases/client/FindByIdUser/FindByIdUser';
+import UpdateClient from 'domain/useCases/client/UpdateClient/UpdateClient';
 
 @Injectable()
 export class ClientService {
@@ -37,5 +38,15 @@ export class ClientService {
     const useCase = new FindByIdUser(clientRepositoryInSequelize);
 
     return useCase.execute(id);
+  }
+
+  updateClient(id: number, data: Client): Promise<Client> {
+    const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new UpdateClient(clientRepositoryInSequelize);
+
+    return useCase.execute(id, data);
   }
 }

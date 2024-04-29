@@ -62,4 +62,60 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
 
     return result;
   }
+
+  async updateEmpresa(id_empresa: number, data: Empresa): Promise<Empresa> {
+    const replacements = [];
+
+    let updateClause = '';
+    if (data.email) {
+        updateClause += 'email = ?,';
+        replacements.push(data.email);
+    }
+    if (data.nome) {
+        updateClause += 'nome = ?,';
+        replacements.push(data.nome);
+    }
+    if (data.dono) {
+        updateClause += 'dono = ?,';
+        replacements.push(data.dono);
+    }
+    if (data.image_url) {
+        updateClause += 'image_url = ?,';
+        replacements.push(data.image_url);
+    }
+    if (data.telefone1) {
+        updateClause += 'telefone1 = ?,';
+        replacements.push(data.telefone1);
+    }
+    if (data.telefone2) {
+        updateClause += 'telefone2 = ?,';
+        replacements.push(data.telefone2);
+    }
+    if (data.password) {
+        const hashPassword = await bcrypt.hash(data.password, 10);
+        updateClause += 'password = ?,';
+        replacements.push(hashPassword);
+    }
+
+    if (updateClause.length > 0) {
+        updateClause = updateClause.slice(0, -1);
+    }
+
+    const sql = `
+        UPDATE empresa e
+        SET 
+            ${updateClause}
+        WHERE 
+            e.id = ?
+    `;
+
+
+    await this.sequelize.query(sql, {
+        type: QueryTypes.UPDATE,
+        replacements: [replacements, id_empresa]
+    });
+
+    return data;
+}
+
 }
