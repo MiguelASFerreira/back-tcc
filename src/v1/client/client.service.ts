@@ -7,6 +7,7 @@ import { CreateClientBody } from './dto/client.dto';
 import FindByEmailUser from 'domain/useCases/client/FindByEmailUser/FindByEmailUser';
 import FindByIdUser from 'domain/useCases/client/FindByIdUser/FindByIdUser';
 import UpdateClient from 'domain/useCases/client/UpdateClient/UpdateClient';
+import UpdateImageClient from 'domain/useCases/client/UpdateImageClient/UpdateImageClient';
 
 @Injectable()
 export class ClientService {
@@ -48,5 +49,15 @@ export class ClientService {
     const useCase = new UpdateClient(clientRepositoryInSequelize);
 
     return useCase.execute(id, data);
+  }
+
+  updateImageClient(file: Express.Multer.File, id: number): Promise<any> {
+    const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new UpdateImageClient(clientRepositoryInSequelize);
+
+    return useCase.execute(file, id);
   }
 }

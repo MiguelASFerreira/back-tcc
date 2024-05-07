@@ -3,6 +3,7 @@ export default class Client {
   readonly email: string;
   readonly password: string;
   readonly nome: string;
+  readonly image_url?: string;
   readonly cpf: string;
   readonly data_nascimento: string;
   readonly cep: string;
@@ -15,6 +16,7 @@ export default class Client {
     email: string,
     password: string,
     nome: string,
+    image_url: string,
     cpf: string,
     data_nascimento: string,
     cep: string,
@@ -26,6 +28,7 @@ export default class Client {
     this.email = email;
     this.password = password;
     this.nome = nome;
+    this.image_url = image_url;
     this.cpf = cpf;
     this.data_nascimento = data_nascimento;
     this.cep = cep;

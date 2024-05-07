@@ -4,7 +4,7 @@ export default class Empresa {
   readonly password: string;
   readonly nome: string;
   readonly dono: string;
-  readonly image_url: string;
+  readonly image_url?: string;
   readonly telefone1: number;
   readonly telefone2: number;
 

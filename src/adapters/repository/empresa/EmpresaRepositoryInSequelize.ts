@@ -31,7 +31,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
     return data;
   }
 
-  async findByIdUser(id: number): Promise<Empresa> {
+  async findByIdEmpresa(id: number): Promise<Empresa> {
     const sql = `
       SELECT 
         * 

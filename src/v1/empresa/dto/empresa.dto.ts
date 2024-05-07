@@ -42,7 +42,7 @@ export class UpdateEmpresaBody {
   dono: string;
 
   @ApiProperty()
-  image_url: string;
+  image_url?: string;
 
   @ApiProperty()
   telefone1: number;
