@@ -7,8 +7,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 export class Client extends Model<Client> {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
-    type: DataType.NUMBER,
+    type: DataType.INTEGER,
   })
   id: number;
 
@@ -20,6 +19,9 @@ export class Client extends Model<Client> {
 
   @Column({ type: DataType.STRING, allowNull: false })
   nome: string;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  image_url?: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
   cpf: string;
@@ -35,6 +37,9 @@ export class Client extends Model<Client> {
 
   @Column({ type: DataType.STRING, allowNull: false })
   bairro: string;
+
+  @Column({ type: DataType.STRING, allowNull: false })
+  logradouro: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
   municipio: string;

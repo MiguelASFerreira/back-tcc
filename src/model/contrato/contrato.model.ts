@@ -1,36 +1,49 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsTo, ForeignKey } from 'sequelize-typescript';
+import { Empresa } from '../empresa/empresa.model';
+import { Servico } from '../servico/servico.model';
+import { Client } from '../client/client.model';
 
 @Table({
   tableName: 'contrato',
   timestamps: true,
 })
-export class Contrato extends Model
-{
-@Column({
-primaryKey: true,
-autoIncrement: true,
-type: DataType.NUMBER,
-})
-id: number;
+export class Contrato extends Model {
+  @Column({
+    primaryKey: true,
+    type: DataType.INTEGER,
+  })
+  id: number;
 
-@Column({ type: DataType.NUMBER, allowNull: false })
-id_servico: number;
+  @ForeignKey(() => Servico)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  id_servico: number;
 
-@Column({ type: DataType.NUMBER, allowNull: false })
-id_cliente: number;
+  @BelongsTo(() => Servico)
+  servico: Servico;
 
-@Column({ type: DataType.NUMBER, allowNull: false })
-id_empresa: number;
+  @ForeignKey(() => Client)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  id_client: number;
 
-@Column({ type: DataType.DECIMAL(10, 2), allowNull: true }) 
-vl_desconto: number;
+  @BelongsTo(() => Client)
+  client: Client;
 
-@Column({ type: DataType.DATE, allowNull: false })
-dt_contrato: Date;
+  @ForeignKey(() => Empresa)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  id_empresa: number;
 
-@Column({ type: DataType.DATE, allowNull: false })
-dt_inicio: Date;
+  @BelongsTo(() => Empresa)
+  empresa: Empresa;
 
-@Column({ type: DataType.DATE, allowNull: false })
-dt_fim: Date;
+  @Column({ type: DataType.DECIMAL(10, 2), allowNull: true })
+  vl_desconto: number;
+
+  @Column({ type: DataType.DATE, allowNull: false })
+  dt_contrato: Date;
+
+  @Column({ type: DataType.DATE, allowNull: false })
+  dt_inicio: Date;
+
+  @Column({ type: DataType.DATE, allowNull: false })
+  dt_fim: Date;
 }

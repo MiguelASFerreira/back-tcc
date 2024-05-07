@@ -7,8 +7,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 export class Servico extends Model<Servico> {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
-    type: DataType.NUMBER,
+    type: DataType.INTEGER,
   })
   id: number;
 
