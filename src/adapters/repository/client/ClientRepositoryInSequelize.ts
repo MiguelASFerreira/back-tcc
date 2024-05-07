@@ -130,6 +130,19 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     });
 
     return data;
-}
+  }
 
+  async updateImageClient(file: string, id_client: number): Promise<any> {
+    const sql = `
+      UPDATE cliente
+      SET image_url = ?
+      WHERE id = ?
+    `;
+    
+    await this.sequelize.query(sql,{
+      replacements: [file, id_client]
+    })
+
+    return true;
+  }
 }

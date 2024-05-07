@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
-import { CreateEmpresaBody } from './dto/empresa.dto';
+import { CreateEmpresaBody, UpdateEmpresaBody } from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
 import EmpresaRepositroyInSequelize from 'src/adapters/repository/empresa/EmpresaRepositoryInSequelize';
 import CreateEmpresa from 'domain/useCases/empresa/CreateEmpresa/CreateEmpresa';
@@ -42,7 +42,7 @@ export class EmpresaService {
     return useCase.execute(email);
   }
 
-  updateEmpresa(id: number, data: Empresa): Promise<Empresa> {
+  updateEmpresa(id: number, data: UpdateEmpresaBody): Promise<Empresa> {
     const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(
       this.sequelize,
     );
