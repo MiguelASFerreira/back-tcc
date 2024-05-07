@@ -7,8 +7,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 export class Empresa extends Model<Empresa> {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
-    type: DataType.NUMBER,
+    type: DataType.INTEGER,
   })
   id: number;
 
@@ -24,7 +23,7 @@ export class Empresa extends Model<Empresa> {
   @Column({ type: DataType.STRING, allowNull: false })
   dono: string;
 
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: true })
   image_url: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
