@@ -38,7 +38,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     const sql = `
       SELECT 
         * 
-      FROM cliente c 
+      FROM client c 
       WHERE c.email = ?
     `;
 
@@ -54,7 +54,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     const sql = `
       SELECT 
         * 
-      FROM cliente c 
+      FROM client c 
       WHERE c.id = ?
     `;
 
@@ -117,7 +117,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     }
 
     const sql = `
-        UPDATE cliente c
+        UPDATE client c
         SET 
             ${updateClause}
         WHERE 
