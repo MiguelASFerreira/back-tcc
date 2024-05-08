@@ -9,6 +9,7 @@ import { Servico } from '../servico/servico.model';
 export class ServicoOferta extends Model<ServicoOferta> {
   @Column({
     primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
   })
   id: number;
