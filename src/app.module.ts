@@ -20,7 +20,7 @@ import { Contrato } from './model/contrato/contrato.model';
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      uri: process.env.DB_URI
+      uri: process.env.DB_URI,
       models: [Client, Empresa, Servico, ServicoOferta, Contrato],
       autoLoadModels: true,
     }),
