@@ -10,6 +10,7 @@ import { Client } from '../client/client.model';
 export class Contrato extends Model {
   @Column({
     primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
   })
   id: number;

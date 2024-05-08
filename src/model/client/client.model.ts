@@ -7,6 +7,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 export class Client extends Model<Client> {
   @Column({
     primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
   })
   id: number;
