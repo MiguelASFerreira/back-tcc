@@ -11,8 +11,8 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     const hashPassword = await bcrypt.hash(data.password, 10);
 
     const sql = `
-    INSERT INTO client (email, password, nome, cpf, data_nascimento, cep, n_casa, bairro, municipio, telefone) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);    
+    INSERT INTO client (email, password, nome, cpf, data_nascimento, cep, n_casa, bairro, logradouro,  municipio, telefone) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);    
     `;
 
     await this.sequelize.query(sql, {
@@ -26,6 +26,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
         data.cep,
         data.n_casa,
         data.bairro,
+        data.logradouro,
         data.municipio,
         data.telefone,
       ],

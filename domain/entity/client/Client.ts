@@ -8,6 +8,7 @@ export default class Client {
   readonly cep: string;
   readonly n_casa: string;
   readonly bairro: string;
+  readonly logradouro: string;
   readonly municipio: string;
   readonly telefone: number;
 
@@ -20,6 +21,7 @@ export default class Client {
     cep: string,
     n_casa: string,
     bairro: string,
+    logradouro: string,
     municipio: string,
     telefone: number,
   ) {
@@ -31,6 +33,7 @@ export default class Client {
     this.cep = cep;
     this.n_casa = n_casa;
     this.bairro = bairro;
+    this.logradouro = logradouro;
     this.municipio = municipio;
     this.telefone = telefone;
   }

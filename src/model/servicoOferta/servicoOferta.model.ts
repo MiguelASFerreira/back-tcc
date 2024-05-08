@@ -1,10 +1,9 @@
-import { Table, Column, Model, DataType, BelongsTo, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsTo, ForeignKey, CreatedAt, UpdatedAt } from 'sequelize-typescript';
 import { Empresa } from '../empresa/empresa.model';
 import { Servico } from '../servico/servico.model';
 
 @Table({
   tableName: 'servico_oferta',
-  timestamps: true,
 })
 export class ServicoOferta extends Model<ServicoOferta> {
   @Column({
@@ -30,4 +29,12 @@ export class ServicoOferta extends Model<ServicoOferta> {
 
   @Column({ type: DataType.DECIMAL(10, 2), allowNull: false})
   vl_servico: number;
+  
+  @CreatedAt
+  @Column({ type: DataType.DATE, field: 'created_at' })
+  createdAt: Date;
+
+  @UpdatedAt
+  @Column({ type: DataType.DATE, field: 'updated_at' })
+  updatedAt: Date;
 }

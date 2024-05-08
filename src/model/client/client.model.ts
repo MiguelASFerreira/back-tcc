@@ -1,8 +1,7 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, CreatedAt, UpdatedAt } from 'sequelize-typescript';
 
 @Table({
   tableName: 'client',
-  timestamps: true,
 })
 export class Client extends Model<Client> {
   @Column({
@@ -47,4 +46,12 @@ export class Client extends Model<Client> {
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   telefone: number;
+
+  @CreatedAt
+  @Column({ type: DataType.DATE, field: 'created_at' })
+  createdAt: Date;
+
+  @UpdatedAt
+  @Column({ type: DataType.DATE, field: 'updated_at' })
+  updatedAt: Date;
 }
