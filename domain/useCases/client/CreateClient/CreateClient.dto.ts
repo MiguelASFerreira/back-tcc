@@ -7,6 +7,7 @@ export type InputCreateClient = {
   cep: string;
   n_casa: string;
   bairro: string;
+  logradouro: string;
   municipio: string;
   telefone: number;
 };
