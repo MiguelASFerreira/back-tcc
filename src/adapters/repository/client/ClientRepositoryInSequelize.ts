@@ -11,7 +11,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
     const hashPassword = await bcrypt.hash(data.password, 10);
 
     const sql = `
-    INSERT INTO cliente (email, password, nome, cpf, data_nascimento, cep, n_casa, bairro, municipio, telefone) 
+    INSERT INTO client (email, password, nome, cpf, data_nascimento, cep, n_casa, bairro, municipio, telefone) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);    
     `;
 
