@@ -44,7 +44,7 @@ export class Client extends Model<Client> {
   @Column({ type: DataType.STRING, allowNull: false })
   municipio: string;
 
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.DOUBLE, allowNull: false })
   telefone: number;
 
   @CreatedAt
