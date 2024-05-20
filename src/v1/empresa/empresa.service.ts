@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { CreateEmpresaBody } from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
@@ -10,7 +10,7 @@ import UpdateEmpresa from 'domain/useCases/empresa/UpdateEmpresa/UpdateEmpresa';
 
 @Injectable()
 export class EmpresaService {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   createEmpresa(data: CreateEmpresaBody): Promise<Empresa> {
     const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(

@@ -6,7 +6,7 @@ export default class Empresa {
   readonly dono: string;
   readonly image_url: string;
   readonly telefone1: number;
-  readonly telefone2: number;
+  readonly cpf: string;
 
   constructor(
     email: string,
@@ -15,7 +15,7 @@ export default class Empresa {
     dono: string,
     image_url: string,
     telefone1: number,
-    telefone2: number,
+    cpf: string,
   ) {
     this.email = email;
     this.password = password;
@@ -23,6 +23,6 @@ export default class Empresa {
     this.dono = dono;
     this.image_url = image_url;
     this.telefone1 = telefone1;
-    this.telefone2 = telefone2;
+    this.cpf = cpf;
   }
 }

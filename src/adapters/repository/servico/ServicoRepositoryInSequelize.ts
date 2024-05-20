@@ -1,3 +1,4 @@
+import { Inject } from "@nestjs/common";
 import Servico from "domain/entity/servico/Servico";
 import ServicoRepository from "domain/entity/servico/ServicoRepository";
 import { QueryTypes } from "sequelize";
@@ -5,7 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 
 
 export default class ServicoRepositoryInSequelize implements ServicoRepository {
-    constructor(private readonly sequelize: Sequelize) {}
+    constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
     async createServico(data: Servico): Promise<Servico> {
         const sql = `
@@ -23,4 +24,6 @@ export default class ServicoRepositoryInSequelize implements ServicoRepository {
 
         return data;
     }
+
+    
 }

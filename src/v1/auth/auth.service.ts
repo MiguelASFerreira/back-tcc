@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import Client from 'domain/entity/client/Client';
 import Empresa from 'domain/entity/empresa/Empresa';
 import FindByEmailUser from 'domain/useCases/client/FindByEmailUser/FindByEmailUser';
@@ -9,7 +9,7 @@ import EmpresaRepositroyInSequelize from 'src/adapters/repository/empresa/Empres
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   findByEmailUser(email: string): Promise<Client> {
     const clientRepositoryInSequelize = new ClientRepositoryInSequelize(

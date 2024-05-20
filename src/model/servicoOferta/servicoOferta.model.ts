@@ -1,4 +1,12 @@
-import { Table, Column, Model, DataType, BelongsTo, ForeignKey, CreatedAt, UpdatedAt } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  BelongsTo,
+  ForeignKey,
+  Sequelize,
+} from 'sequelize-typescript';
 import { Empresa } from '../empresa/empresa.model';
 import { Servico } from '../servico/servico.model';
 
@@ -27,14 +35,21 @@ export class ServicoOferta extends Model<ServicoOferta> {
   @BelongsTo(() => Servico)
   servico: Servico;
 
-  @Column({ type: DataType.DECIMAL(10, 2), allowNull: false})
+  @Column({ type: DataType.DECIMAL(10, 2), allowNull: false })
   vl_servico: number;
-  
-  @CreatedAt
-  @Column({ type: DataType.DATE, field: 'created_at' })
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('NOW()'),
+    field: 'created_at',
+  })
   createdAt: Date;
 
-  @UpdatedAt
-  @Column({ type: DataType.DATE, field: 'updated_at' })
+  @Column({
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    onUpdate: 'CURRENT_TIMESTAMP',
+    field: 'updated_at',
+  })
   updatedAt: Date;
 }

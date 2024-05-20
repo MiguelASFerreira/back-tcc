@@ -3,9 +3,10 @@ import ClientRepository from 'domain/entity/client/ClientRepository';
 import { QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
+import { Inject } from '@nestjs/common';
 
 export default class ClientRepositoryInSequelize implements ClientRepository {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   async createClient(data: Client): Promise<Client> {
     const hashPassword = await bcrypt.hash(data.password, 10);
@@ -72,49 +73,49 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
 
     let updateClause = '';
     if (data.email) {
-        updateClause += 'email = ?,';
-        replacements.push(data.email);
+      updateClause += 'email = ?,';
+      replacements.push(data.email);
     }
     if (data.telefone) {
-        updateClause += 'telefone = ?,';
-        replacements.push(data.telefone);
+      updateClause += 'telefone = ?,';
+      replacements.push(data.telefone);
     }
     if (data.municipio) {
-        updateClause += 'municipio = ?,';
-        replacements.push(data.municipio);
+      updateClause += 'municipio = ?,';
+      replacements.push(data.municipio);
     }
     if (data.bairro) {
-        updateClause += 'bairro = ?,';
-        replacements.push(data.bairro);
+      updateClause += 'bairro = ?,';
+      replacements.push(data.bairro);
     }
     if (data.n_casa) {
-        updateClause += 'n_casa = ?,';
-        replacements.push(data.n_casa);
+      updateClause += 'n_casa = ?,';
+      replacements.push(data.n_casa);
     }
     if (data.cep) {
-        updateClause += 'cep = ?,';
-        replacements.push(data.cep);
+      updateClause += 'cep = ?,';
+      replacements.push(data.cep);
     }
     if (data.cpf) {
-        updateClause += 'cpf = ?,';
-        replacements.push(data.cpf);
+      updateClause += 'cpf = ?,';
+      replacements.push(data.cpf);
     }
     if (data.data_nascimento) {
-        updateClause += 'data_nascimento = ?,';
-        replacements.push(data.data_nascimento);
+      updateClause += 'data_nascimento = ?,';
+      replacements.push(data.data_nascimento);
     }
     if (data.nome) {
-        updateClause += 'nome = ?,';
-        replacements.push(data.nome);
+      updateClause += 'nome = ?,';
+      replacements.push(data.nome);
     }
     if (data.password) {
-        const hashPassword = await bcrypt.hash(data.password, 10);
-        updateClause += 'password = ?,';
-        replacements.push(hashPassword);
+      const hashPassword = await bcrypt.hash(data.password, 10);
+      updateClause += 'password = ?,';
+      replacements.push(hashPassword);
     }
 
     if (updateClause.length > 0) {
-        updateClause = updateClause.slice(0, -1);
+      updateClause = updateClause.slice(0, -1);
     }
 
     const sql = `
@@ -124,13 +125,29 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
         WHERE 
             c.id = ?
     `;
-    
+
     await this.sequelize.query(sql, {
-        type: QueryTypes.UPDATE,
-        replacements: [replacements, id_client]
+      type: QueryTypes.UPDATE,
+      replacements: [replacements, id_client],
     });
 
     return data;
-}
+  }
 
+  async esqueciSenha(id_client: number, senha: string): Promise<any> {
+    const hashPassword = await bcrypt.hash(senha, 10);
+    const sql = `
+        UPDATE client c
+        SET 
+            password = ?
+        WHERE 
+            c.id = ?
+    `;
+
+    await this.sequelize.query(sql, {
+      replacements: [hashPassword, id_client]
+    })
+
+    return 'Senha atualizada';
+  }
 }

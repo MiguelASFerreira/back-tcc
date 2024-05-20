@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {QueryServicoOferta, ServicoOferta} from 'domain/entity/servico_oferta/ServicoOferta';
 import { Sequelize } from 'sequelize-typescript';
 import { CreateServicoOfertaBody, FilterServicoOfertaQuery } from './dto/servico_oferta.dto';
@@ -8,7 +8,7 @@ import FilterServicoOferta from 'domain/useCases/servico_oferta/FilterServicoOfe
 
 @Injectable()
 export class ServicoOfertaService {
-    constructor(private readonly sequelize: Sequelize) {}
+    constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
     createServicoOferta(id_empresa: number, data: CreateServicoOfertaBody): Promise<ServicoOferta> {
         const servicoOfertaRepositoryInSequelize = new ServicoOfertaRepositoryInSequelize(this.sequelize);

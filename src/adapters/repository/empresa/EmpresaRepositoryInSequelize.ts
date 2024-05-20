@@ -3,9 +3,10 @@ import EmpresaRepository from 'domain/entity/empresa/EmpresaRepository';
 import { QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
+import { Inject } from '@nestjs/common';
 
 export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   async createEmpresa(data: Empresa): Promise<Empresa> {
     const hashPassword = await bcrypt.hash(data.password, 10);
@@ -24,7 +25,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
         data.dono,
         data.image_url,
         data.telefone1,
-        data.telefone2,
+        data.cpf,
       ],
     });
 
@@ -87,9 +88,9 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
         updateClause += 'telefone1 = ?,';
         replacements.push(data.telefone1);
     }
-    if (data.telefone2) {
-        updateClause += 'telefone2 = ?,';
-        replacements.push(data.telefone2);
+    if (data.cpf) {
+        updateClause += 'cpf = ?,';
+        replacements.push(data.cpf);
     }
     if (data.password) {
         const hashPassword = await bcrypt.hash(data.password, 10);

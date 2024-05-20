@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, CreatedAt, UpdatedAt } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, Sequelize } from 'sequelize-typescript';
 
 @Table({
   tableName: 'empresa',
@@ -26,17 +26,23 @@ export class Empresa extends Model<Empresa> {
   @Column({ type: DataType.STRING, allowNull: true })
   image_url: string;
 
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.DOUBLE, allowNull: false })
   telefone1: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  telefone2: string;
+  cpf: string;
   
-  @CreatedAt
-  @Column({ type: DataType.DATE, field: 'created_at' })
+  @Column({ 
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    field: 'created_at'
+  })
   createdAt: Date;
 
-  @UpdatedAt
-  @Column({ type: DataType.DATE, field: 'updated_at' })
+  @Column({ 
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+    field: 'updated_at'
+  })
   updatedAt: Date;
 }

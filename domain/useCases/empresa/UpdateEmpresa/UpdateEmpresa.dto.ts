@@ -5,6 +5,6 @@ export type InputUpdateEmpresa = {
     dono: string;
     image_url: string;
     telefone1: number;
-    telefone2: number;
+    cpf: string;
   };
   

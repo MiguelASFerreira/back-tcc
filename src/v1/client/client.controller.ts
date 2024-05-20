@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  Param,
   Patch,
   Post,
   Req,
@@ -13,7 +14,7 @@ import {
 import Client from 'domain/entity/client/Client';
 import { ClientService } from './client.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateClientBody, UpdateClientBody } from './dto/client.dto';
+import { CreateClientBody, EsqueciSenhaBody, UpdateClientBody } from './dto/client.dto';
 import { Request } from 'express';
 import { AuthUserMiddleware } from 'src/middleware/auth.user.middleware';
 
@@ -65,6 +66,30 @@ export class ClientController {
       }
 
       return await this.clientService.createClient(data);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('/reset-password/:code')
+  async esqueciSenha(@Param('code') code: number, @Body() data: EsqueciSenhaBody): Promise<any> {
+    try {
+      const compareCode = await this.clientService.compareCode(code);
+
+      if (!compareCode) {
+        throw new HttpException(
+          'Codigo inválido',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      
+      const updatePassword = await this.clientService.esqueciSenha(compareCode.id_client, data.novaSenha)
+
+      return {
+        code: HttpStatus.OK,
+        message: updatePassword
+      }
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,3 +1,4 @@
+import { Inject } from "@nestjs/common";
 import Contrato from "domain/entity/contrato/Contrato";
 import ContratoRespository from "domain/entity/contrato/ContratoRepository";
 import { QueryTypes } from "sequelize";
@@ -5,7 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 
 
 export default class ContratoRepositoryInSequelize implements ContratoRespository {
-    constructor(private readonly sequelize: Sequelize) {}
+    constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
     async createContrato(data: Contrato): Promise<Contrato> {
         const sql = `

@@ -12,24 +12,24 @@ import { Empresa } from './model/empresa/empresa.model';
 import { Servico } from './model/servico/servico.model';
 import { ServicoOferta } from './model/servicoOferta/servicoOferta.model';
 import { Contrato } from './model/contrato/contrato.model';
+import { ResetCodeModule } from './v1/reset-code/reset-code.module';
+import { ResetCode } from './model/resetCode/resetCode.model';
+import { Sequelize } from 'sequelize-typescript';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      uri: process.env.DB_URI,
-      models: [Client, Empresa, Servico, ServicoOferta, Contrato],
-      autoLoadModels: true,
-    }),
+    DatabaseModule,
     ClientModule,
     AuthModule,
     EmpresaModule,
     ServicoModule,
     ServicoOfertaModule,
     ContratoModule,
+    ResetCodeModule,
   ],
   controllers: [],
   providers: [],

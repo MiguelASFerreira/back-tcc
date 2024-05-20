@@ -1,3 +1,4 @@
+import { Inject } from '@nestjs/common';
 import {
   QueryServicoOferta,
   ServicoOferta,
@@ -9,7 +10,7 @@ import { Sequelize } from 'sequelize-typescript';
 export default class ServicoOfertaRepositoryInSequelize
   implements ServicoOfertaRepository
 {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   async createServicoOferta(data: ServicoOferta): Promise<ServicoOferta> {
     const sql = `
@@ -33,11 +34,11 @@ export default class ServicoOfertaRepositoryInSequelize
     }
     
     if (query.rota_inicio) {
-      whereClauses.push('s.rota_inicio LIKE ?');
+      whereClauses.push('LOWER(s.rota_inicio) LIKE LOWER(?)');
     }
     
     if (query.rota_fim) {
-      whereClauses.push('s.rota_fim LIKE ?');
+      whereClauses.push('LOWER(s.rota_fim) LIKE LOWER(?)');
     }
     
     const whereClause = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : '';
@@ -49,7 +50,8 @@ export default class ServicoOfertaRepositoryInSequelize
         e.nome AS "nomeEmpresa",
         s.id AS id_servico,
         s.rota_inicio,
-        s.rota_fim
+        s.rota_fim,
+        so.vl_servico as "preco"
       FROM 
         servico_oferta so
       INNER JOIN 
@@ -72,12 +74,12 @@ export default class ServicoOfertaRepositoryInSequelize
     if (query.rota_fim) {
       replacements.push(`%${query.rota_fim}%`);
     }
-    
+
     const result: any = await this.sequelize.query(sql, {
       type: QueryTypes.SELECT,
       replacements
     });
-    console.log(result);
+
     return result;
   }
   
