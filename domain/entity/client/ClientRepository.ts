@@ -5,4 +5,5 @@ export default interface ClientRepository {
   findByEmailUser(email: string): Promise<Client>;
   findByIdUser(id: number): Promise<Client>;
   updateClient(id_client: number, data: Client): Promise<Client>;
+  esqueciSenha(id_client: number, senha: string): Promise<any>;
 }

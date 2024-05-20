@@ -104,3 +104,9 @@ export class UpdateClientBody {
   @IsNotEmpty()
   telefone: number;
 }
+
+export class EsqueciSenhaBody {
+  @ApiProperty()
+  @IsNotEmpty()
+  novaSenha: string;
+}

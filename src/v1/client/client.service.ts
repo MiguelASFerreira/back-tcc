@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import Client from 'domain/entity/client/Client';
 import CreateClient from 'domain/useCases/client/CreateClient/CreateClient';
 import { Sequelize } from 'sequelize-typescript';
@@ -7,10 +7,13 @@ import { CreateClientBody } from './dto/client.dto';
 import FindByEmailUser from 'domain/useCases/client/FindByEmailUser/FindByEmailUser';
 import FindByIdUser from 'domain/useCases/client/FindByIdUser/FindByIdUser';
 import UpdateClient from 'domain/useCases/client/UpdateClient/UpdateClient';
+import EsqueciSenha from 'domain/useCases/client/EsqueciSenha/EsqueciSenha';
+import CompareCode from 'domain/useCases/resetCode/CompareCode/CompareCode';
+import { ResetCodeRepositoryInSequelize } from 'src/adapters/repository/resetCode/ResetCodeRepositoryInSequelize';
 
 @Injectable()
 export class ClientService {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   createClient(data: CreateClientBody): Promise<Client> {
     const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
@@ -48,5 +51,25 @@ export class ClientService {
     const useCase = new UpdateClient(clientRepositoryInSequelize);
 
     return useCase.execute(id, data);
+  }
+
+  esqueciSenha(id_client: number, senha: string): Promise<any> {
+    const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new EsqueciSenha(clientRepositoryInSequelize)
+
+    return useCase.execute(id_client, senha)
+  }
+
+  compareCode(id_client: number): Promise<any> {
+    const resetCodeRepositoryInSequelize = new ResetCodeRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new CompareCode(resetCodeRepositoryInSequelize)
+
+    return useCase.execute(id_client);
   }
 }

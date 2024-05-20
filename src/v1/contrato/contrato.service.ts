@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { CreateContratoBody } from './dto/contrato.dto';
 import Contrato from 'domain/entity/contrato/Contrato';
@@ -8,7 +8,7 @@ import FindContratoUser from 'domain/useCases/contrato/FindContratoUser/FindCont
 
 @Injectable()
 export class ContratoService {
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
   createContrato(
     id_cliente: number,

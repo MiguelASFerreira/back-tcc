@@ -20,7 +20,7 @@ export class CreateEmpresaBody {
   telefone1: number;
 
   @ApiProperty()
-  telefone2: number;
+  cpf: string;
 }
 
 export class FindByEmailBody {
@@ -48,5 +48,5 @@ export class UpdateEmpresaBody {
   telefone1: number;
 
   @ApiProperty()
-  telefone2: number;
+  cpf: string;
 }
