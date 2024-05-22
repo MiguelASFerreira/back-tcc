@@ -18,9 +18,6 @@ export const databaseProviders = {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       timezone: '-03:00',
-      define: {
-        // timestamps: false
-      }
     });
     sequelize.addModels([
       Client,
@@ -31,9 +28,7 @@ export const databaseProviders = {
       ResetCode,
       Veiculo
     ]);
-    await sequelize.sync({
-      // force: true,
-    });
+    await sequelize.sync();
     return sequelize;
   },
 };

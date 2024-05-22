@@ -16,6 +16,7 @@ import { ResetCodeModule } from './v1/reset-code/reset-code.module';
 import { ResetCode } from './model/resetCode/resetCode.model';
 import { Sequelize } from 'sequelize-typescript';
 import { DatabaseModule } from './database/database.module';
+import { VeiculoModule } from './v1/veiculo/veiculo.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { DatabaseModule } from './database/database.module';
     ServicoOfertaModule,
     ContratoModule,
     ResetCodeModule,
+    VeiculoModule,
   ],
   controllers: [],
   providers: [],

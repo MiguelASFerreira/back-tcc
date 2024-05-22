@@ -5,6 +5,6 @@ export default class FindByIdEmpresa {
   constructor(private readonly empresaRepository: EmpresaRepository) {}
 
   async execute(id: number): Promise<Empresa> {
-    return await this.empresaRepository.findByIdUser(id);
+    return await this.empresaRepository.findByIdEmpresa(id);
   }
 }
