@@ -1,17 +1,18 @@
-version: '3'
+version: '3.8'
 
 services:
-  postgres:
-    image: postgres
-    container_name: back-tcc
+  db:
+    image: mysql:latest
+    restart: always
     environment:
-      POSTGRES_USER: tcc
-      POSTGRES_PASSWORD: tcc
-      POSTGRES_DB: tcc
+      MYSQL_DATABASE: 'tcc'
+      MYSQL_USER: 'tcc'
+      MYSQL_PASSWORD: 'tcc'
+      MYSQL_ROOT_PASSWORD: 'tcc' # Você pode alterar esta senha conforme necessário
     ports:
-      - "5432:5432"
+      - '3306:3306'
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
 
 volumes:
-  pgdata:
+  db_data:
