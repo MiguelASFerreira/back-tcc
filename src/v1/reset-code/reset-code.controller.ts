@@ -51,7 +51,7 @@ export class ResetCodeController {
           name: 'TransNex',
           email: 'miguel@transnex.online',
         },
-        recipients: [{ email: 'migant1306@gmail.com' }],
+        recipients: [{ email: emailExists.email }],
         template_uuid: 'b4d22fd9-8164-4bd1-b11e-7fbe5c47ba49',
         template_variables: {
           user_email: `${emailExists.email}`,
