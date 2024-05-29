@@ -16,9 +16,6 @@ import { ResetCodeModule } from './v1/reset-code/reset-code.module';
 import { ResetCode } from './model/resetCode/resetCode.model';
 import { Sequelize } from 'sequelize-typescript';
 import { DatabaseModule } from './database/database.module';
-import { VeiculoModule } from './v1/veiculo/veiculo.module';
-import { MailService } from './v1/mail/mail.service';
-import { MailModule } from './v1/mail/mail.module';
 
 @Module({
   imports: [
@@ -33,10 +30,8 @@ import { MailModule } from './v1/mail/mail.module';
     ServicoOfertaModule,
     ContratoModule,
     ResetCodeModule,
-    VeiculoModule,
-    MailModule,
   ],
   controllers: [],
-  providers: [MailService],
+  providers: [],
 })
 export class AppModule {}
