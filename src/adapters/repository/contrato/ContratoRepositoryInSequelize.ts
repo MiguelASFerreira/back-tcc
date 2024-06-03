@@ -10,7 +10,7 @@ export default class ContratoRepositoryInSequelize implements ContratoRespositor
 
     async createContrato(data: Contrato): Promise<Contrato> {
         const sql = `
-            INSERT INTO contrato (id_servico,id_cliente, id_empresa, vl_desconto, dt_inicio, dt_fim, dt_contrato)
+            INSERT INTO contrato (id_servico,id_client, id_empresa, vl_desconto, dt_inicio, dt_fim, dt_contrato)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
 
