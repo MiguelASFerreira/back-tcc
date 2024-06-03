@@ -46,7 +46,7 @@ export default class ContratoRepositoryInSequelize implements ContratoRespositor
         INNER JOIN servico_oferta so 
             ON s.id = so.id_servico
         WHERE 
-            co.id_cliente = ?
+            co.id_client = ?
         GROUP BY 
             e.nome, 
             s.rota_inicio, 
