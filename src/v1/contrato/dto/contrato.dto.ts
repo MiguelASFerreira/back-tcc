@@ -5,11 +5,11 @@ export class CreateContratoBody {
     @ApiProperty()
     id_servico: number;
 
-    // @ApiProperty()
-    // id_cliente: number;
-
     @ApiProperty()
     id_empresa: number;
+
+    @ApiProperty()
+    vl_total: number;
 
     @ApiProperty()
     vl_desconto: number;

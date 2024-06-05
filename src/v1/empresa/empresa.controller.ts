@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
-import { CreateEmpresaBody, UpdateEmpresaBody } from './dto/empresa.dto';
+import { CreateEmpresaBody, FindAllContrato, UpdateEmpresaBody } from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -43,6 +43,22 @@ export class EmpresaController {
       }
 
       return empresaExist;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('/contrato')
+  @UseGuards(new AuthEmpresaMiddleware())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Trazer todos os contratos da empresa'
+  })
+  async findContratoEmpresa(@Req() req: Request, @Body() data?: FindAllContrato): Promise<any> {
+    try {
+      const id = req.empresa.id;
+      return await this.empresaService.findContratoEmpresa(id, data.id_servico)
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

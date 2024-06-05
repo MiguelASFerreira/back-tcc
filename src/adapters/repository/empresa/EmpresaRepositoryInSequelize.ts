@@ -128,4 +128,33 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
 
     return data;
   }
+
+  async findContratoEmpresa(
+    id_empresa: number,
+    id_servico?: number,
+  ): Promise<any> {
+    const paramServico = id_servico ? `AND c.id_servico = ?` : ``;
+    const sql = `
+      SELECT
+          c.id,
+          cl.nome,
+          cl.email,
+          c.dt_contrato,
+          COALESCE(c.vl_total, 0) - COALESCE(c.vl_desconto, 0) as vl_total,
+          CONCAT(s.rota_inicio, ' - ', s.rota_fim) as 'rota'
+      FROM contrato c
+      JOIN client cl on c.id_client = cl.id
+      JOIN servico s on c.id_servico = s.id
+      WHERE
+          c.id_empresa = ?
+          ${paramServico}
+    `;
+
+    const result: any = await this.sequelize.query(sql, {
+      type: QueryTypes.SELECT,
+      replacements: [id_empresa, id_servico],
+    });
+
+    return result;
+  }
 }

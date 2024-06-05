@@ -25,5 +25,41 @@ export default class ServicoRepositoryInSequelize implements ServicoRepository {
         return data;
     }
 
+    async allServicos(): Promise<Servico> {
+        const sql = `
+            SELECT
+                s.id,
+                CONCAT(s.rota_inicio, ' - ', s.rota_fim) as rota
+            FROM
+            servico s
+        `;
+
+        const result: any = await this.sequelize.query(sql, {
+            type: QueryTypes.SELECT
+        })
+
+        return result;
+    }
     
+    async servicoEmpresa(id_empresa: number): Promise<any> {
+        const sql = `
+            SELECT
+                s.id as id_servico,
+                so.id as id_servicoOferta,
+                so.id_empresa,
+                s.rota_inicio,
+                s.rota_fim,
+                so.vl_servico
+            FROM servico s
+            INNER JOIN servico_oferta so ON s.id = so.id_servico
+            WHERE so.id_empresa = ?    
+        `;
+
+        const result: any = await this.sequelize.query(sql, {
+            type: QueryTypes.SELECT,
+            replacements: [id_empresa]
+        })
+
+        return result
+    }
 }

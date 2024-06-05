@@ -35,6 +35,9 @@ export class Contrato extends Model {
   @BelongsTo(() => Empresa)
   empresa: Empresa;
 
+  @Column({ type: DataType.DECIMAL(10, 2), allowNull: false })
+  vl_total: number;
+
   @Column({ type: DataType.DECIMAL(10, 2), allowNull: true })
   vl_desconto: number;
 
