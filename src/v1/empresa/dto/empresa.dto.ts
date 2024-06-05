@@ -50,3 +50,8 @@ export class UpdateEmpresaBody {
   @ApiProperty()
   cpf: string;
 }
+
+export class FindAllContrato {
+  @ApiProperty()
+  id_servico?: number;
+}

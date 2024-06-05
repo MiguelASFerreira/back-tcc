@@ -5,6 +5,8 @@ import { CreateServicoOfertaBody, FilterServicoOfertaQuery } from './dto/servico
 import ServicoOfertaRepositoryInSequelize from 'src/adapters/repository/servico_oferta/ServicoOfertaRepositoryInSequelize';
 import CreateServicoOferta from 'domain/useCases/servico_oferta/CreateServicoOferta/CreateServicoOferta';
 import FilterServicoOferta from 'domain/useCases/servico_oferta/FilterServicoOferta/FilterServicoOferta';
+import DeleteServicoOfertaEmpresa from 'domain/useCases/servico_oferta/DeleteServicoOfertaEmpresa/DeleteServicoOfertaEmpresa';
+import UpdateServicoOfertaEmpresa from 'domain/useCases/servico_oferta/UpdateServicoOfertaEmpresa/UpdateServicoOfertaEmpresa';
 
 @Injectable()
 export class ServicoOfertaService {
@@ -28,4 +30,21 @@ export class ServicoOfertaService {
 
         return useCase.execute(query);
     }
+
+    deleteServicoOfertaEmpresa(id_empresa: number, id_servico: number): Promise<any> {
+        const servicoOfertaRepositoryInSequelize = new ServicoOfertaRepositoryInSequelize(this.sequelize);
+
+        const useCase = new DeleteServicoOfertaEmpresa(servicoOfertaRepositoryInSequelize)
+
+        return useCase.execute(id_empresa, id_servico)
+    }
+
+    updateServicoOfertaEmpresa(valor: number, id_empresa: number, id_servico: number): Promise<any> {
+        const servicoOfertaRepositoryInSequelize = new ServicoOfertaRepositoryInSequelize(this.sequelize);
+
+        const useCase = new UpdateServicoOfertaEmpresa(servicoOfertaRepositoryInSequelize)
+
+        return useCase.execute(valor, id_empresa, id_servico)
+    }
+    
 }

@@ -25,6 +25,7 @@ export class ContratoService {
       id_empresa: data.id_empresa,
       id_cliente: id_cliente,
       dt_contrato: data.dt_contrato,
+      vl_total: data.vl_total,
       vl_desconto: data.vl_desconto,
       dt_inicio: data.dt_inicio,
       dt_fim: data.dt_fim,

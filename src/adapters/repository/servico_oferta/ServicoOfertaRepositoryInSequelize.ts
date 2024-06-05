@@ -83,4 +83,64 @@ export default class ServicoOfertaRepositoryInSequelize
     return result;
   }
   
+  async deleteServicoOfertaEmpresa(id_empresa: number, id_servico: number): Promise<any> {
+    const sqlExist = `
+      SELECT 
+        *
+      FROM servico_oferta
+      WHERE 
+        id_empresa = ?
+        AND id_servico = ?
+    `;
+
+    const [resultExist]: any = await this.sequelize.query(sqlExist, {
+      type: QueryTypes.SELECT,
+      replacements: [id_empresa, id_servico]
+    })
+
+    if (!resultExist) {
+      return {
+        message: 'Serviço não encontrado!'
+      };
+    }
+
+
+    const sql = `
+      DELETE FROM
+        servico_oferta
+      WHERE
+      id_empresa = ?
+      AND id_servico = ?
+    `;
+
+    await this.sequelize.query(sql, {
+      type: QueryTypes.DELETE,
+      replacements: [id_empresa, id_servico]
+    })
+
+    return {
+      message: 'Serviço deletado com sucesso!'
+    }
+  }
+
+  async updateServicoOfertaEmpresa(valor: number, id_empresa: number, id_servico: number): Promise<any> {
+    const sql = `
+    UPDATE
+      servico_oferta
+    SET 
+      vl_servico = ?
+    WHERE
+      id_empresa = ?
+      AND id_servico = ?
+    `;
+
+    await this.sequelize.query(sql, {
+      type:   QueryTypes.UPDATE,
+      replacements: [valor, id_empresa, id_servico]
+    })
+
+    return {
+      message: 'Atualizado com sucesso!'
+    }
+  }
 }
