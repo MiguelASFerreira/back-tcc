@@ -54,9 +54,15 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
 
   async findByIdUser(id: number): Promise<Client> {
     const sql = `
-      SELECT 
-        * 
-      FROM client c 
+      SELECT
+          c.*,
+          e.nome as  nomeEmpresa,
+          e.dono as donoEmpresa,
+          e.email as emailEmpresa,
+          e.telefone1 as  telefoneEmpresa
+      FROM client c
+      INNER JOIN contrato ct on c.id = ct.id_client
+      INNER JOIN empresa e on ct.id_empresa = e.id
       WHERE c.id = ?
     `;
 
