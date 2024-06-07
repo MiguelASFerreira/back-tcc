@@ -26,23 +26,47 @@ export default class ServicoOfertaRepositoryInSequelize
     return data;
   }
 
-  async filterServicoOferta(query: QueryServicoOferta): Promise<QueryServicoOferta> {
+  async filterServicoOferta(
+    query: QueryServicoOferta,
+  ): Promise<QueryServicoOferta> {
+    const sqlBusy = `
+      SELECT
+          e.id AS EMPRESA_ID,
+          (SELECT SUM(v.capacidade)
+          FROM veiculo v
+          WHERE v.empresa_id = e.id) AS CAPACIDADE_MAXIMA,
+          (SELECT COUNT(c.id)
+          FROM contrato c
+          WHERE c.id_empresa = e.id) AS QUANTIDADE_CONTRATO
+      FROM
+          empresa e
+      HAVING
+          CAPACIDADE_MAXIMA = QUANTIDADE_CONTRATO
+    `;
+
+    const busyResults: any = await this.sequelize.query(sqlBusy, {
+      type: QueryTypes.SELECT
+    })
+
+    const busyEmpresaIds = busyResults.map((result: any) => result.EMPRESA_ID);
+
     let whereClauses = [];
-    
-    if (query.id_empresa) {
-      whereClauses.push('e.id = ?');
-    }
-    
+
     if (query.rota_inicio) {
       whereClauses.push('LOWER(s.rota_inicio) LIKE LOWER(?)');
     }
-    
+
     if (query.rota_fim) {
       whereClauses.push('LOWER(s.rota_fim) LIKE LOWER(?)');
     }
-    
-    const whereClause = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : '';
-    
+
+    if (busyEmpresaIds.length > 0) {
+      whereClauses.push(`e.id NOT IN (${busyEmpresaIds.join(', ')})`);
+    }
+
+    const whereClause =
+      whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : '';
+
     const sql = `
       SELECT
         so.id AS id_servicoOferta,
@@ -60,30 +84,29 @@ export default class ServicoOfertaRepositoryInSequelize
         servico s ON s.id = so.id_servico
       ${whereClause}
     `;
-    
+
     const replacements = [];
-  
-    if (query.id_empresa) {
-      replacements.push(query.id_empresa);
-    }
-    
+
     if (query.rota_inicio) {
       replacements.push(`%${query.rota_inicio}%`);
     }
-    
+
     if (query.rota_fim) {
       replacements.push(`%${query.rota_fim}%`);
     }
 
     const result: any = await this.sequelize.query(sql, {
       type: QueryTypes.SELECT,
-      replacements
+      replacements,
     });
 
     return result;
   }
-  
-  async deleteServicoOfertaEmpresa(id_empresa: number, id_servico: number): Promise<any> {
+
+  async deleteServicoOfertaEmpresa(
+    id_empresa: number,
+    id_servico: number,
+  ): Promise<any> {
     const sqlExist = `
       SELECT 
         *
@@ -95,15 +118,14 @@ export default class ServicoOfertaRepositoryInSequelize
 
     const [resultExist]: any = await this.sequelize.query(sqlExist, {
       type: QueryTypes.SELECT,
-      replacements: [id_empresa, id_servico]
-    })
+      replacements: [id_empresa, id_servico],
+    });
 
     if (!resultExist) {
       return {
-        message: 'Serviço não encontrado!'
+        message: 'Serviço não encontrado!',
       };
     }
-
 
     const sql = `
       DELETE FROM
@@ -115,15 +137,19 @@ export default class ServicoOfertaRepositoryInSequelize
 
     await this.sequelize.query(sql, {
       type: QueryTypes.DELETE,
-      replacements: [id_empresa, id_servico]
-    })
+      replacements: [id_empresa, id_servico],
+    });
 
     return {
-      message: 'Serviço deletado com sucesso!'
-    }
+      message: 'Serviço deletado com sucesso!',
+    };
   }
 
-  async updateServicoOfertaEmpresa(valor: number, id_empresa: number, id_servico: number): Promise<any> {
+  async updateServicoOfertaEmpresa(
+    valor: number,
+    id_empresa: number,
+    id_servico: number,
+  ): Promise<any> {
     const sql = `
     UPDATE
       servico_oferta
@@ -135,12 +161,12 @@ export default class ServicoOfertaRepositoryInSequelize
     `;
 
     await this.sequelize.query(sql, {
-      type:   QueryTypes.UPDATE,
-      replacements: [valor, id_empresa, id_servico]
-    })
+      type: QueryTypes.UPDATE,
+      replacements: [valor, id_empresa, id_servico],
+    });
 
     return {
-      message: 'Atualizado com sucesso!'
-    }
+      message: 'Atualizado com sucesso!',
+    };
   }
 }

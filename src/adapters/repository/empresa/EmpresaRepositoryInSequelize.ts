@@ -47,7 +47,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
             e.created_at,
             e.updated_at
         FROM empresa e
-        INNER JOIN veiculo v on e.id = v.empresa_id
+        LEFT JOIN veiculo v on e.id = v.empresa_id
         WHERE e.id = ?
     `;
 
@@ -123,7 +123,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
 
     await this.sequelize.query(sql, {
       type: QueryTypes.UPDATE,
-      replacements: [replacements, id_empresa],
+      replacements: [...replacements, id_empresa],
     });
 
     return data;

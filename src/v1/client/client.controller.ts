@@ -30,10 +30,10 @@ export class ClientController {
   @ApiOperation({
     summary: 'Trazer detalhes do usuário pelo token'
   })
-  async findById(@Req() req: Request): Promise<Client> {
+  async findByIdUser(@Req() req: Request): Promise<Client> {
     try {
       const id = req.user.id;
-
+      
       const userExist = await this.clientService.findByIdUser(id);
 
       if (!userExist) {

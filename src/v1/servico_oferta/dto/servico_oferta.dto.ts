@@ -9,12 +9,6 @@ export class CreateServicoOfertaBody {
 }
 
 export class FilterServicoOfertaQuery {
-  // @ApiProperty({required: false})
-  // id_servicoOferta?: number;
-
-  @ApiProperty({ required: false })
-  id_empresa?: number;
-
   @ApiProperty({ required: false })
   rota_inicio?: string;
 
