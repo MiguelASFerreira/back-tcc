@@ -29,7 +29,7 @@ export class EmpresaController {
   @ApiOperation({
     summary: 'Trazer detalhes da empresa pelo token'
   })
-  async findById(@Req() req: Request): Promise<Empresa> {
+  async findByIdEmpresa(@Req() req: Request): Promise<Empresa> {
     try {
       const id = req.empresa.id;
 

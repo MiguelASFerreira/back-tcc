@@ -113,7 +113,7 @@ export class AuthController {
         SECRET_KEY,
         {
           algorithm: 'HS256',
-          expiresIn: '7d',
+          expiresIn: '1h',
         },
       );
 
