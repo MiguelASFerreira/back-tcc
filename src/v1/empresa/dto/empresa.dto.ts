@@ -55,3 +55,8 @@ export class FindAllContrato {
   @ApiProperty()
   id_servico?: number;
 }
+
+export class DeleteContrato {
+  @ApiProperty()
+  id_client: number
+}

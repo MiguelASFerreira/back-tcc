@@ -139,6 +139,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
           c.id,
           cl.nome,
           cl.email,
+          cl.telefone,
           c.dt_contrato,
           COALESCE(c.vl_total, 0) - COALESCE(c.vl_desconto, 0) as vl_total,
           CONCAT(s.rota_inicio, ' - ', s.rota_fim) as 'rota'
@@ -156,5 +157,41 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
     });
 
     return result;
+  }
+
+  async finalContract(id_empresa: number, id_client: number): Promise<any> {
+    const sqlContrato = `
+        SELECT
+            *
+        FROM contrato c
+          WHERE c.id_client = ?
+          AND c.id_empresa = ?
+    `
+
+    const [resultContrato]: any = await this.sequelize.query(sqlContrato, {
+      type: QueryTypes.SELECT,
+      replacements: [id_client, id_empresa]
+    })
+
+    if (!resultContrato) {
+      throw new Error('Contrato inexistente!')
+    }
+
+    const sql = `
+        DELETE
+            FROM
+                contrato c
+        WHERE c.id_client = ?
+        AND c.id_empresa = ?
+    `
+
+    await this.sequelize.query(sql, {
+      type: QueryTypes.DELETE,
+      replacements: [id_client, id_empresa]
+    })
+
+    return {
+      message: 'Deletado com sucesso'
+    }
   }
 }

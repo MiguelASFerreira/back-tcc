@@ -119,6 +119,10 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
       updateClause += 'password = ?,';
       replacements.push(hashPassword);
     }
+    if (data.logradouro) {
+      updateClause += 'logradouro = ?,';
+      replacements.push(data.logradouro);
+    }
 
     if (updateClause.length > 0) {
       updateClause = updateClause.slice(0, -1);
@@ -134,7 +138,7 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
 
     await this.sequelize.query(sql, {
       type: QueryTypes.UPDATE,
-      replacements: [replacements, id_client],
+      replacements: [...replacements, id_client],
     });
 
     return data;

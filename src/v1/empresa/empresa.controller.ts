@@ -1,17 +1,24 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
   Logger,
+  Param,
   Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
-import { CreateEmpresaBody, FindAllContrato, UpdateEmpresaBody } from './dto/empresa.dto';
+import {
+  CreateEmpresaBody,
+  DeleteContrato,
+  FindAllContrato,
+  UpdateEmpresaBody,
+} from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -27,7 +34,7 @@ export class EmpresaController {
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Trazer detalhes da empresa pelo token'
+    summary: 'Trazer detalhes da empresa pelo token',
   })
   async findByIdEmpresa(@Req() req: Request): Promise<Empresa> {
     try {
@@ -37,7 +44,7 @@ export class EmpresaController {
 
       if (!empresaExist) {
         throw new HttpException(
-          'Usuário não encontrado',
+          'Empresa não encontrada',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -53,12 +60,15 @@ export class EmpresaController {
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Trazer todos os contratos da empresa'
+    summary: 'Trazer todos os contratos da empresa',
   })
-  async findContratoEmpresa(@Req() req: Request, @Body() data?: FindAllContrato): Promise<any> {
+  async findContratoEmpresa(
+    @Req() req: Request,
+    @Body() data?: FindAllContrato,
+  ): Promise<any> {
     try {
       const id = req.empresa.id;
-      return await this.empresaService.findContratoEmpresa(id, data.id_servico)
+      return await this.empresaService.findContratoEmpresa(id, data.id_servico);
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,7 +77,7 @@ export class EmpresaController {
 
   @Post()
   @ApiOperation({
-    summary: 'Criar Empresa'
+    summary: 'Criar Empresa',
   })
   async createEmpresa(@Body() data: CreateEmpresaBody) {
     try {
@@ -93,9 +103,12 @@ export class EmpresaController {
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Atualizar detalhes da empresa pelo token'
+    summary: 'Atualizar detalhes da empresa pelo token',
   })
-  async updateEmpresa(@Body() data: UpdateEmpresaBody, @Req() req: Request): Promise<Empresa> {
+  async updateEmpresa(
+    @Body() data: UpdateEmpresaBody,
+    @Req() req: Request,
+  ): Promise<Empresa> {
     try {
       const userId = req.empresa.id;
 
@@ -103,14 +116,51 @@ export class EmpresaController {
 
       if (!empresaExist) {
         throw new HttpException(
-          'Usuário não encontrado',
+          'Empresa não encontrada',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
 
-      const updateEmpresa = await this.empresaService.updateEmpresa(userId, data);
+      const updateEmpresa = await this.empresaService.updateEmpresa(
+        userId,
+        data,
+      );
 
       return updateEmpresa;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:id_client')
+  @UseGuards(new AuthEmpresaMiddleware())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Finalizar contrato com cliente',
+  })
+  async finalContrato(
+    @Param('id_client') id_client: number,
+    @Req() req: Request,
+  ): Promise<any> {
+    try {
+      const id = req.empresa.id;
+
+      const empresaExist = await this.empresaService.findByIdEmpresa(id);
+
+      if (!empresaExist) {
+        throw new HttpException(
+          'Empresa não encontrada',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      const finalizarContrato = await this.empresaService.finalContrato(
+        id,
+        id_client
+      );
+
+      return finalizarContrato;
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
