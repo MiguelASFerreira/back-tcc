@@ -6,6 +6,7 @@ import VeiculoRepositoryInSequelize from 'src/adapters/repository/veiculo/Veicul
 import CreateVeiculo from 'domain/useCases/veiculo/CreateVeiculo/CreateVeiculo';
 import VeiculoByEmpresa from 'domain/useCases/veiculo/VeiculoByEmpresa/VeiculoByEmpresa';
 import UpdateVeiculo from 'domain/useCases/veiculo/UpdateVeiculo/UpdateVeiculo';
+import DeleteVeiculo from 'domain/useCases/veiculo/DeleteVeiculo/DeleteVeiculo';
 
 @Injectable()
 export class VeiculoService {
@@ -39,5 +40,13 @@ export class VeiculoService {
         const useCase = new UpdateVeiculo(veiculoRepositoryInSequelize);
 
         return useCase.execute(id, id_empresa, data)
+    }
+
+    deleteVeiculo(id: number, id_empresa: number): Promise<any> {
+        const veiculoRepositoryInSequelize = new VeiculoRepositoryInSequelize(this.sequelize);
+
+        const useCase = new DeleteVeiculo(veiculoRepositoryInSequelize)
+
+        return useCase.execute(id, id_empresa)
     }
 }

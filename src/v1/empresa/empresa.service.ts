@@ -8,6 +8,7 @@ import FindByIdEmpresa from 'domain/useCases/empresa/FindByIdEmpresa/FindByIdEmp
 import FindByEmailEmpresa from 'domain/useCases/empresa/FindByEmailEmpresa/FindByEmailEmpresa';
 import UpdateEmpresa from 'domain/useCases/empresa/UpdateEmpresa/UpdateEmpresa';
 import FindContratoEmpresa from 'domain/useCases/empresa/FindContratoEmpresa/FindContratoEmpresa';
+import FinalContrato from 'domain/useCases/empresa/FinalContrato/FinalContrato';
 
 @Injectable()
 export class EmpresaService {
@@ -61,5 +62,15 @@ export class EmpresaService {
     const useCase = new FindContratoEmpresa(empresaRepositoryInSequelize)
 
     return useCase.execute(id_empresa, id_servico);
+  }
+
+  finalContrato(id_empresa: number, id_client: number) {
+    const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new FinalContrato(empresaRepositoryInSequelize)
+
+    return useCase.execute(id_client, id_empresa)
   }
 }

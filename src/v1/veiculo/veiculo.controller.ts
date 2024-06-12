@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { VeiculoService } from './veiculo.service';
 import { AuthEmpresaMiddleware } from 'src/middleware/auth.empresa.middleware';
@@ -46,7 +46,7 @@ export class VeiculoController {
 
             if (!empresaExist) {
                 throw new HttpException(
-                  'Usuário não encontrado',
+                  'Empresa não encontrada',
                   HttpStatus.INTERNAL_SERVER_ERROR,
                 );
             }
@@ -63,11 +63,11 @@ export class VeiculoController {
         }
     }
 
-  @Patch('')
+  @Patch('/:id')
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Atualizar detalhes da empresa pelo token'
+    summary: 'Atualizar detalhes do veículo'
   })
   async updateEmpresa(@Param('id') id: number, @Body() data: UpdateVeiculoBody, @Req() req: Request): Promise<Veiculo> {
     try {
@@ -77,7 +77,7 @@ export class VeiculoController {
 
       if (!empresaExist) {
         throw new HttpException(
-          'Usuário não encontrado',
+          'Empresa não encontrada',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -85,6 +85,34 @@ export class VeiculoController {
       const updateVeiculoByEmpresa = await this.veiculoService.updateVeiculo(id, empresaExist.id, data)
 
       return updateVeiculoByEmpresa;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:id')
+  @UseGuards(new AuthEmpresaMiddleware())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Deletar Veículo'
+  })
+  async deleteVeiculo(@Param('id') id: number, @Req() req: Request): Promise<any> {
+    try {
+      const userId = req.empresa.id;
+
+      const empresaExist = await this.empresaService.findByIdEmpresa(userId);
+
+      if (!empresaExist) {
+        throw new HttpException(
+          'Empresa não encontrada',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      const deleteVeiculoByEmpresa = await this.veiculoService.deleteVeiculo(id, userId)
+      
+      return deleteVeiculoByEmpresa
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
