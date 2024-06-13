@@ -23,3 +23,8 @@ export class CreateContratoBody {
     @ApiProperty()
     dt_contrato: Date;
 }
+
+export class UpdateAddDesconto {
+    @ApiProperty()
+    desconto: number
+}

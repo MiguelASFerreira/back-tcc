@@ -133,7 +133,7 @@ export class EmpresaController {
     }
   }
 
-  @Delete('/:id_client')
+  @Delete('/contrato/:id_client')
   @UseGuards(new AuthEmpresaMiddleware())
   @ApiBearerAuth()
   @ApiOperation({

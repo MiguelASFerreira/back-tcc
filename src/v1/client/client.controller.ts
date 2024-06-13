@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -123,7 +124,39 @@ export class ClientController {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
 
+  @Delete('/contrato/:id_empresa')
+  @UseGuards(new AuthUserMiddleware())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Finalizar contrato com cliente',
+  })
+  async finalContrato(
+    @Param('id_empresa') id_empresa: number,
+    @Req() req: Request,
+  ): Promise<any> {
+    try {
+      const userId = req.user.id;
 
+      const userExist = await this.clientService.findByIdUser(userId);
+
+      if (!userExist) {
+        throw new HttpException(
+          'Usuário não encontrado',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      const finalizarContrato = await this.clientService.finalContrato(
+        id_empresa,
+        userId
+      );
+
+      return finalizarContrato;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
