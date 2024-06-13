@@ -61,4 +61,22 @@ export default class ContratoRepositoryInSequelize implements ContratoRespositor
 
         return result;
     }
+
+    async addDesconto(id_client: number, id_empresa: number, desconto: number): Promise<any> {
+        const sql = `
+            UPDATE contrato c
+            SET c.vl_desconto = ?
+            WHERE c.id_client = ?
+            AND c.id_empresa = ?
+        `;
+
+        await this.sequelize.query(sql, {
+            type: QueryTypes.UPDATE,
+            replacements: [desconto, id_client, id_empresa]
+        })
+
+        return {
+            message: 'Desconto aplicado!'
+        }
+    }
 }

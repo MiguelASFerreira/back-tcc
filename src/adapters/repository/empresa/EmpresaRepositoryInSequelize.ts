@@ -137,11 +137,14 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
     const sql = `
       SELECT
           c.id,
+          cl.id as id_client,
           cl.nome,
           cl.email,
           cl.telefone,
           c.dt_contrato,
-          COALESCE(c.vl_total, 0) - COALESCE(c.vl_desconto, 0) as vl_total,
+          c.vl_total,
+          c.vl_desconto,
+          COALESCE(c.vl_total, 0) - COALESCE(c.vl_desconto, 0) as vl_total_desconto,
           CONCAT(s.rota_inicio, ' - ', s.rota_fim) as 'rota'
       FROM contrato c
       JOIN client cl on c.id_client = cl.id

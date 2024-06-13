@@ -160,4 +160,40 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
 
     return 'Senha atualizada';
   }
+
+  async finalContract(id_empresa: number, id_client: number): Promise<any> {
+    const sqlContrato = `
+        SELECT
+            *
+        FROM contrato c
+          WHERE c.id_client = ?
+          AND c.id_empresa = ?
+    `
+
+    const [resultContrato]: any = await this.sequelize.query(sqlContrato, {
+      type: QueryTypes.SELECT,
+      replacements: [id_client, id_empresa]
+    })
+
+    if (!resultContrato) {
+      throw new Error('Contrato inexistente!')
+    }
+
+    const sql = `
+        DELETE
+            FROM
+                contrato c
+        WHERE c.id_client = ?
+        AND c.id_empresa = ?
+    `
+
+    await this.sequelize.query(sql, {
+      type: QueryTypes.DELETE,
+      replacements: [id_client, id_empresa]
+    })
+
+    return {
+      message: 'Deletado com sucesso'
+    }
+  }
 }
