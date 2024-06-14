@@ -6,6 +6,9 @@ export class CreateContratoBody {
     id_servico: number;
 
     @ApiProperty()
+    id_client: number;
+
+    @ApiProperty()
     id_empresa: number;
 
     @ApiProperty()
