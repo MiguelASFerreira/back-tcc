@@ -32,26 +32,24 @@ export default class ContratoRepositoryInSequelize implements ContratoRespositor
 
     async findContratoUser(id: number): Promise<Contrato> {
         const sql = `
-        SELECT
-            co.id AS id_contrato,
-            s.rota_inicio,
-            s.rota_fim,
-            e.nome,
-            SUM(so.vl_servico - co.vl_desconto) AS Total
-        FROM contrato co
-        INNER JOIN servico s 
-            ON s.id = co.id_servico
-        INNER JOIN empresa e 
-            ON co.id_empresa = e.id
-        INNER JOIN servico_oferta so 
-            ON s.id = so.id_servico
-        WHERE 
-            co.id_client = ?
-        GROUP BY 
-            e.nome, 
-            s.rota_inicio, 
-            s.rota_fim, 
-            co.id
+            SELECT
+                co.id AS id_contrato,
+                e.id as id_empresa,
+                s.rota_inicio,
+                s.rota_fim,
+                e.nome,
+                COALESCE(co.vl_total, 0) - COALESCE(co.vl_desconto, 0) as total
+            FROM contrato co
+            INNER JOIN servico s
+                ON s.id = co.id_servico
+            INNER JOIN empresa e
+                ON co.id_empresa = e.id
+            INNER JOIN servico_oferta so
+                ON s.id = so.id_servico
+            WHERE
+                co.id_client = ?
+            ORDER BY
+                e.nome
         `;
 
         const result: any = await this.sequelize.query(sql, {
