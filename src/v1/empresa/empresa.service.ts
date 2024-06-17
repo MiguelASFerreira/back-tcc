@@ -9,6 +9,7 @@ import FindByEmailEmpresa from 'domain/useCases/empresa/FindByEmailEmpresa/FindB
 import UpdateEmpresa from 'domain/useCases/empresa/UpdateEmpresa/UpdateEmpresa';
 import FindContratoEmpresa from 'domain/useCases/empresa/FindContratoEmpresa/FindContratoEmpresa';
 import FinalContrato from 'domain/useCases/empresa/FinalContrato/FinalContrato';
+import AddImageEmpresa from 'domain/useCases/empresa/AddImageEmpresa/AddImageEmpresa';
 
 @Injectable()
 export class EmpresaService {
@@ -72,5 +73,15 @@ export class EmpresaService {
     const useCase = new FinalContrato(empresaRepositoryInSequelize)
 
     return useCase.execute(id_client, id_empresa)
+  }
+
+  addImageEmpresa(id: number, path: string): Promise<any> {
+    const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new AddImageEmpresa(empresaRepositoryInSequelize)
+
+    return useCase.execute(id, path)
   }
 }

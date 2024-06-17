@@ -196,4 +196,21 @@ export default class ClientRepositoryInSequelize implements ClientRepository {
       message: 'Deletado com sucesso'
     }
   }
+
+  async addImageClient(id: number, path: string): Promise<any> {
+    const sql = `
+        UPDATE client c
+        SET 
+           c.image_url = ?
+        WHERE 
+            c.id = ?
+    `;
+
+    const [result]: any = await this.sequelize.query(sql, {
+      type: QueryTypes.UPDATE,
+      replacements: [path, id]
+    })
+
+    return result
+  }
 }

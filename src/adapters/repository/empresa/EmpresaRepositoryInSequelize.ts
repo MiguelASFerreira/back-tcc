@@ -197,4 +197,21 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
       message: 'Deletado com sucesso'
     }
   }
+
+  async addImageEmpresa(id: number, path: string): Promise<any> {
+    const sql = `
+        UPDATE empresa e
+        SET 
+           e.image_url = ?
+        WHERE 
+            e.id = ?
+    `;
+
+    const [result]: any = await this.sequelize.query(sql, {
+      type: QueryTypes.UPDATE,
+      replacements: [path, id]
+    })
+
+    return result
+  }
 }

@@ -7,4 +7,5 @@ export default interface EmpresaRepository {
   updateEmpresa(id_empresa: number, data: Empresa): Promise<Empresa>;
   findContratoEmpresa(id_empresa: number, id_servico?: number): Promise<any>;
   finalContract(id_empresa: number, id_client: number): Promise<any>;
+  addImageEmpresa(id: number, path: string): Promise<any>;
 }
