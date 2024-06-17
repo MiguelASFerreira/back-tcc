@@ -10,11 +10,16 @@ import { ResetCodeModule } from './v1/reset-code/reset-code.module';
 import { DatabaseModule } from './database/database.module';
 import { VeiculoModule } from './v1/veiculo/veiculo.module';
 import { MailModule } from './v1/mail/mail.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: './public/uploads',
+      serveRoot: '/uploads',
     }),
     DatabaseModule,
     ClientModule,

@@ -60,3 +60,7 @@ export class DeleteContrato {
   @ApiProperty()
   id_client: number
 }
+
+export class UploadImageEmpresa {
+  
+}

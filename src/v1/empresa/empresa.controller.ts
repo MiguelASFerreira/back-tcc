@@ -10,19 +10,30 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
 import {
   CreateEmpresaBody,
-  DeleteContrato,
   FindAllContrato,
   UpdateEmpresaBody,
 } from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
-import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthEmpresaMiddleware } from 'src/middleware/auth.empresa.middleware';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import path, { join } from 'path';
+import * as fs from 'fs';
 
 @Controller('empresa')
 @ApiTags('Empresa')
@@ -157,10 +168,76 @@ export class EmpresaController {
 
       const finalizarContrato = await this.empresaService.finalContrato(
         id,
-        id_client
+        id_client,
       );
 
       return finalizarContrato;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('/upload/image')
+  @UseGuards(new AuthEmpresaMiddleware())
+  @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: { type: 'file', title: 'image para upload', required: ['true'] },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './public/uploads',
+        filename(req, file, callback) {
+          const type = file.mimetype.replace('image/', '');
+          const fileName =
+            new Date().getTime() + btoa(file.originalname) + '.' + type;
+          callback(null, fileName);
+        },
+      }),
+    }),
+  )
+  @ApiOperation({
+    summary: 'Cadastrar imagem',
+  })
+  async addImageEmpresa(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ): Promise<any> {
+    try {
+      const id = req.empresa.id;
+      const imagePath = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+
+      const empresaExist = await this.empresaService.findByIdEmpresa(id);
+
+      if (!empresaExist) {
+        throw new HttpException('Empresa não encontrada', HttpStatus.NOT_FOUND);
+      }
+
+      if (
+        empresaExist &&
+        empresaExist.image_url &&
+        typeof empresaExist.image_url === 'string'
+      ) {
+        const oldImagePath = join(
+          './public/uploads',
+          empresaExist.image_url.split('/uploads/')[1],
+        );
+        try {
+          fs.unlinkSync(oldImagePath);
+        } catch (error) {
+          this.logger.warn(`Failed to delete old image: ${error.message}`);
+        }
+      }
+      await this.empresaService.addImageEmpresa(id, imagePath);
+
+      return { message: 'Imagem salva com sucesso', path: imagePath };
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

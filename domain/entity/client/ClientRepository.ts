@@ -7,4 +7,5 @@ export default interface ClientRepository {
   updateClient(id_client: number, data: Client): Promise<Client>;
   esqueciSenha(id_client: number, senha: string): Promise<any>;
   finalContract(id_empresa: number, id_client: number): Promise<any>;
+  addImageClient(id: number, path: string): Promise<any>;
 }

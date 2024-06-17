@@ -11,6 +11,7 @@ import EsqueciSenha from 'domain/useCases/client/EsqueciSenha/EsqueciSenha';
 import CompareCode from 'domain/useCases/resetCode/CompareCode/CompareCode';
 import { ResetCodeRepositoryInSequelize } from 'src/adapters/repository/resetCode/ResetCodeRepositoryInSequelize';
 import FinalContratoUser from 'domain/useCases/client/FinalContrato/FinalContrato';
+import AddImageClient from 'domain/useCases/client/AddImageClient/AddImageClient';
 
 @Injectable()
 export class ClientService {
@@ -82,5 +83,15 @@ export class ClientService {
     const useCase = new FinalContratoUser(clientRepositoryInSequelize)
 
     return useCase.execute(id_empresa, id_client)
+  }
+
+  addImageClient(id: number, path: string): Promise<any> {
+    const clientRepositoryInSequelize = new ClientRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new AddImageClient(clientRepositoryInSequelize);
+
+    return useCase.execute(id, path)
   }
 }

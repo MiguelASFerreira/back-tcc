@@ -10,15 +10,20 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import Client from 'domain/entity/client/Client';
 import { ClientService } from './client.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateClientBody, EsqueciSenhaBody, UpdateClientBody } from './dto/client.dto';
 import { Request } from 'express';
 import { AuthUserMiddleware } from 'src/middleware/auth.user.middleware';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { join } from 'path';
+import * as fs from 'fs';
 @Controller('client')
 @ApiTags('Cliente')
 export class ClientController {
@@ -154,6 +159,72 @@ export class ClientController {
       );
 
       return finalizarContrato;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('/upload/image')
+  @UseGuards(new AuthUserMiddleware())
+  @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: { type: 'file', title: 'image para upload', required: ['true'] },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './public/uploads',
+        filename(req, file, callback) {
+          const type = file.mimetype.replace('image/', '');
+          const fileName =
+            new Date().getTime() + btoa(file.originalname) + '.' + type;
+          callback(null, fileName);
+        },
+      }),
+    }),
+  )
+  @ApiOperation({
+    summary: 'Cadastrar imagem',
+  })
+  async addImageEmpresa(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ): Promise<any> {
+    try {
+      const userId = req.user.id;
+      const imagePath = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+
+      const userExist = await this.clientService.findByIdUser(userId);
+
+      if (!userExist) {
+        throw new HttpException('Usuário não encontrada', HttpStatus.NOT_FOUND);
+      }
+
+      if (
+        userExist &&
+        userExist.image_url &&
+        typeof userExist.image_url === 'string'
+      ) {
+        const oldImagePath = join(
+          './public/uploads',
+          userExist.image_url.split('/uploads/')[1],
+        );
+        try {
+          fs.unlinkSync(oldImagePath);
+        } catch (error) {
+          this.logger.warn(`Failed to delete old image: ${error.message}`);
+        }
+      }
+      await this.clientService.addImageClient(userId, imagePath);
+
+      return { message: 'Imagem salva com sucesso', path: imagePath };
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
