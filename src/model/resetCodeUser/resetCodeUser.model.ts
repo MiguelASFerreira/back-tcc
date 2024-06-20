@@ -10,9 +10,9 @@ import {
 import { Client } from '../client/client.model';
 
 @Table({
-  tableName: 'reset_code',
+  tableName: 'reset_code_user',
 })
-export class ResetCode extends Model<ResetCode> {
+export class ResetCodeUser extends Model<ResetCodeUser> {
   @Column({
     primaryKey: true,
     autoIncrement: true,

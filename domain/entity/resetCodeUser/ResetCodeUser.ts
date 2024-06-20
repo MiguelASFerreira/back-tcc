@@ -1,4 +1,4 @@
-export default class ResetCode {
+export default class ResetCodeUser {
     readonly id?: number;
     readonly code: number;
     readonly id_cliente: number;

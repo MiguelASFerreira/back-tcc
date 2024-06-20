@@ -1,14 +1,14 @@
 import { Inject } from "@nestjs/common";
-import ResetCodeRepository from "domain/entity/resetCode/ResetCodeRepository";
+import ResetCodeUserRepository from "domain/entity/resetCodeUser/ResetCodeUserRepository";
 import { Sequelize } from "sequelize-typescript";
 
 
-export class ResetCodeRepositoryInSequelize implements ResetCodeRepository {
+export class ResetCodeUserRepositoryInSequelize implements ResetCodeUserRepository {
     constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
-    async createCode(id_client: number, code: number): Promise<any> {
+    async createCodeUser(id_client: number, code: number): Promise<any> {
         const sql = `
-            INSERT INTO reset_code (code, id_client)
+            INSERT INTO reset_code_user (code, id_client)
             VALUES (?, ?)
         `;
 
@@ -19,11 +19,11 @@ export class ResetCodeRepositoryInSequelize implements ResetCodeRepository {
         return code
     }
 
-    async existCode(code: number): Promise<boolean> {
+    async existCodeUser(code: number): Promise<boolean> {
         const sql = `
             SELECT
                 *
-            FROM reset_code rc
+            FROM reset_code_user rc
             WHERE rc.code = ?
         `;
 
@@ -34,13 +34,13 @@ export class ResetCodeRepositoryInSequelize implements ResetCodeRepository {
         return results.length > 0;
     }
 
-    async compareCode(code: number): Promise<any> {
+    async compareCodeUser(code: number): Promise<any> {
         const sql = `
             SELECT
                 rc.id,
                 rc.id_client,
                 rc.code
-            FROM reset_code rc
+            FROM reset_code_user rc
             WHERE rc.code = ?
             ORDER BY rc.created_at DESC
             LIMIT 1

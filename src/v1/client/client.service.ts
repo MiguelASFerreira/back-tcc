@@ -8,8 +8,8 @@ import FindByEmailUser from 'domain/useCases/client/FindByEmailUser/FindByEmailU
 import FindByIdUser from 'domain/useCases/client/FindByIdUser/FindByIdUser';
 import UpdateClient from 'domain/useCases/client/UpdateClient/UpdateClient';
 import EsqueciSenha from 'domain/useCases/client/EsqueciSenha/EsqueciSenha';
-import CompareCode from 'domain/useCases/resetCode/CompareCode/CompareCode';
-import { ResetCodeRepositoryInSequelize } from 'src/adapters/repository/resetCode/ResetCodeRepositoryInSequelize';
+import CompareCodeUser from 'domain/useCases/resetCodeUser/CompareCodeUser/CompareCodeUser';
+import { ResetCodeUserRepositoryInSequelize } from 'src/adapters/repository/resetCodeUser/ResetCodeUserRepositoryInSequelize';
 import FinalContratoUser from 'domain/useCases/client/FinalContrato/FinalContrato';
 import AddImageClient from 'domain/useCases/client/AddImageClient/AddImageClient';
 
@@ -66,11 +66,11 @@ export class ClientService {
   }
 
   compareCode(id_client: number): Promise<any> {
-    const resetCodeRepositoryInSequelize = new ResetCodeRepositoryInSequelize(
+    const resetCodeRepositoryInSequelize = new ResetCodeUserRepositoryInSequelize(
       this.sequelize,
     );
 
-    const useCase = new CompareCode(resetCodeRepositoryInSequelize)
+    const useCase = new CompareCodeUser(resetCodeRepositoryInSequelize)
 
     return useCase.execute(id_client);
   }
