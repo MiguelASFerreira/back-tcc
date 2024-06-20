@@ -7,24 +7,27 @@ import {
   Logger,
   Post,
 } from '@nestjs/common';
-import { ResetCodeService } from './reset-code.service';
-import { ResetCodeBody } from './dto/reset-code.dto';
+import { ResetCodeUserService } from './reset-code-user.service';
+import { ResetCodeUserBody } from './dto/reset-code-user.dto';
 import { ClientService } from '../client/client.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MailService } from '../mail/mail.service';
 
-@Controller('reset-code')
-@ApiTags('Reset Code')
-export class ResetCodeController {
+@Controller('reset-code-user')
+@ApiTags('Reset Code User')
+export class ResetCodeUserController {
   private readonly logger: Logger = new Logger();
   constructor(
-    private readonly resetCodeService: ResetCodeService,
+    private readonly resetCodeUserService: ResetCodeUserService,
     private readonly clientService: ClientService,
     private readonly mailService: MailService,
   ) {}
 
   @Post()
-  async createResetCode(@Body() data: ResetCodeBody): Promise<any> {
+  @ApiOperation({
+    summary: 'Reset de senha do usuário'
+  })
+  async createResetCode(@Body() data: ResetCodeUserBody): Promise<any> {
     try {
       const emailExists = await this.clientService.findByEmailUser(data.email);
 
@@ -35,13 +38,13 @@ export class ResetCodeController {
         );
       }
 
-      let code = this.resetCodeService.generateCode();
+      let code = this.resetCodeUserService.generateCode();
 
-      while (await this.resetCodeService.existsCode(code)) {
-        code = this.resetCodeService.generateCode();
+      while (await this.resetCodeUserService.existsCode(code)) {
+        code = this.resetCodeUserService.generateCode();
       }
 
-      const resetCode = await this.resetCodeService.createResetCode(
+      const resetCode = await this.resetCodeUserService.createResetCode(
         emailExists.id,
         code,
       );

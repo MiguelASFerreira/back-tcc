@@ -24,6 +24,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import * as fs from 'fs';
+
 @Controller('client')
 @ApiTags('Cliente')
 export class ClientController {
@@ -79,6 +80,9 @@ export class ClientController {
   }
 
   @Post('/reset-password/:code')
+  @ApiOperation({
+    summary: 'Rota de reset de senha do usuário'
+  })
   async esqueciSenha(@Param('code') code: number, @Body() data: EsqueciSenhaBody): Promise<any> {
     try {
       const compareCode = await this.clientService.compareCode(code);

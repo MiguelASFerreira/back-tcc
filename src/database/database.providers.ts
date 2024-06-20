@@ -2,7 +2,8 @@ import { Sequelize } from 'sequelize-typescript';
 import { Client } from 'src/model/client/client.model';
 import { Contrato } from 'src/model/contrato/contrato.model';
 import { Empresa } from 'src/model/empresa/empresa.model';
-import { ResetCode } from 'src/model/resetCode/resetCode.model';
+import { ResetCodeUser } from 'src/model/resetCodeUser/resetCodeUser.model';
+import { ResetCodeEmpresa } from 'src/model/resetCodeEmpresa/resetCodeEmpresa.model';
 import { Servico } from 'src/model/servico/servico.model';
 import { ServicoOferta } from 'src/model/servicoOferta/servicoOferta.model';
 import { Veiculo } from 'src/model/veiculo/veiculo.model';
@@ -25,7 +26,8 @@ export const databaseProviders = {
       Servico,
       ServicoOferta,
       Contrato,
-      ResetCode,
+      ResetCodeUser,
+      ResetCodeEmpresa,
       Veiculo
     ]);
     await sequelize.sync();

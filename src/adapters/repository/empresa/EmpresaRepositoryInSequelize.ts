@@ -144,7 +144,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
           c.dt_contrato,
           c.vl_total,
           c.vl_desconto,
-          COALESCE(c.vl_total, 0) - COALESCE(c.vl_desconto, 0) as vl_total_desconto,
+          (COALESCE(c.vl_total, 0) - COALESCE(c.vl_desconto, 0)) AS vl_total_desconto,
           CONCAT(s.rota_inicio, ' - ', s.rota_fim) as 'rota'
       FROM contrato c
       JOIN client cl on c.id_client = cl.id
@@ -196,6 +196,23 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
     return {
       message: 'Deletado com sucesso'
     }
+  }
+
+  async esqueciSenha(id_empresa: number, senha: string): Promise<any> {
+    const hashPassword = await bcrypt.hash(senha, 10);
+    const sql = `
+        UPDATE empresa e
+        SET 
+            password = ?
+        WHERE 
+            e.id = ?
+    `;
+
+    await this.sequelize.query(sql, {
+      replacements: [hashPassword, id_empresa]
+    })
+
+    return 'Senha atualizada';
   }
 
   async addImageEmpresa(id: number, path: string): Promise<any> {
