@@ -12,14 +12,14 @@ import { VeiculoModule } from './v1/veiculo/veiculo.module';
 import { MailModule } from './v1/mail/mail.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ResetCodeEmpresaModule } from './v1/reset-code-empresa/reset-code-empresa.module';
-
+import { join } from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: './public/uploads',
+      rootPath: join(__dirname, '..', 'public', 'uploads'),
       serveRoot: '/uploads',
     }),
     DatabaseModule,
