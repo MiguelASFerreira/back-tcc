@@ -17,6 +17,7 @@ import {
 import { EmpresaService } from './empresa.service';
 import {
   CreateEmpresaBody,
+  EsqueciSenhaBody,
   FindAllContrato,
   UpdateEmpresaBody,
 } from './dto/empresa.dto';
@@ -104,6 +105,33 @@ export class EmpresaController {
       }
 
       return await this.empresaService.createEmpresa(data);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('/reset-password/:code')
+  @ApiOperation({
+    summary: 'Rota de reset de senha da empresa'
+  })
+  async esqueciSenha(@Param('code') code: number, @Body() data: EsqueciSenhaBody): Promise<any> {
+    try {
+      const compareCode = await this.empresaService.compareCode(code);
+
+      if (!compareCode) {
+        throw new HttpException(
+          'Codigo inválido',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      
+      const updatePassword = await this.empresaService.esqueciSenha(compareCode.id_empresa, data.novaSenha)
+
+      return {
+        code: HttpStatus.OK,
+        message: updatePassword
+      }
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

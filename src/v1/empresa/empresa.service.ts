@@ -10,6 +10,9 @@ import UpdateEmpresa from 'domain/useCases/empresa/UpdateEmpresa/UpdateEmpresa';
 import FindContratoEmpresa from 'domain/useCases/empresa/FindContratoEmpresa/FindContratoEmpresa';
 import FinalContrato from 'domain/useCases/empresa/FinalContrato/FinalContrato';
 import AddImageEmpresa from 'domain/useCases/empresa/AddImageEmpresa/AddImageEmpresa';
+import { ResetCodeEmpresaRepositoryInSequelize } from 'src/adapters/repository/resetCodeEmpresa/ResetCodeEmpresaRepositoryInSequelize';
+import CompareCodeEmpresa from 'domain/useCases/resetCodeEmpresa/CompareCodeEmpresa/CompareCodeEmpresa';
+import EsqueciSenhaEmpresa from 'domain/useCases/empresa/EsqueciSenha/EsqueciSenha';
 
 @Injectable()
 export class EmpresaService {
@@ -73,6 +76,26 @@ export class EmpresaService {
     const useCase = new FinalContrato(empresaRepositoryInSequelize)
 
     return useCase.execute(id_client, id_empresa)
+  }
+
+  esqueciSenha(id_client: number, senha: string): Promise<any> {
+    const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new EsqueciSenhaEmpresa(empresaRepositoryInSequelize)
+
+    return useCase.execute(id_client, senha)
+  }
+
+  compareCode(id_empresa: number): Promise<any> {
+    const resetCodeEmpresaRepositoryInSequelize = new ResetCodeEmpresaRepositoryInSequelize(
+      this.sequelize,
+    );
+
+    const useCase = new CompareCodeEmpresa(resetCodeEmpresaRepositoryInSequelize)
+
+    return useCase.execute(id_empresa);
   }
 
   addImageEmpresa(id: number, path: string): Promise<any> {

@@ -1,9 +1,9 @@
 import ResetCodeUserRepository from "domain/entity/resetCodeUser/ResetCodeUserRepository";
 
 export default class ExistsCodeUser {
-    constructor(private readonly resetCodeRepository: ResetCodeUserRepository) {}
+    constructor(private readonly resetCodeUserRepository: ResetCodeUserRepository) {}
 
     async execute(code: number): Promise<boolean> {
-        return await this.resetCodeRepository.existCodeUser(code)
+        return await this.resetCodeUserRepository.existCodeUser(code)
     }
 }
