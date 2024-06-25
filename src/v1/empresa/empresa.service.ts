@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { CreateEmpresaBody } from './dto/empresa.dto';
-import Empresa from 'domain/entity/empresa/Empresa';
+import Empresa, { EmpresaInfo } from 'domain/entity/empresa/Empresa';
 import EmpresaRepositroyInSequelize from 'src/adapters/repository/empresa/EmpresaRepositoryInSequelize';
 import CreateEmpresa from 'domain/useCases/empresa/CreateEmpresa/CreateEmpresa';
 import FindByIdEmpresa from 'domain/useCases/empresa/FindByIdEmpresa/FindByIdEmpresa';
@@ -28,7 +28,7 @@ export class EmpresaService {
     return useCase.execute(data);
   }
 
-  findByIdEmpresa(id: number): Promise<Empresa> {
+  findByIdEmpresa(id: number): Promise<EmpresaInfo> {
     const empresaRepositoryInSequelize = new EmpresaRepositroyInSequelize(
       this.sequelize,
     );

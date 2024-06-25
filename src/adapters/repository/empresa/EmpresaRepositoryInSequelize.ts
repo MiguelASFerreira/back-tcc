@@ -1,4 +1,4 @@
-import Empresa from 'domain/entity/empresa/Empresa';
+import Empresa, { EmpresaInfo } from 'domain/entity/empresa/Empresa';
 import EmpresaRepository from 'domain/entity/empresa/EmpresaRepository';
 import { QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -32,7 +32,7 @@ export default class EmpresaRepositroyInSequelize implements EmpresaRepository {
     return data;
   }
 
-  async findByIdEmpresa(id: number): Promise<Empresa> {
+  async findByIdEmpresa(id: number): Promise<EmpresaInfo> {
     const sql = `
         SELECT
             e.id,

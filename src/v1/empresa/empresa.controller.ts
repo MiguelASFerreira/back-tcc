@@ -20,6 +20,7 @@ import {
   EsqueciSenhaBody,
   FindAllContrato,
   UpdateEmpresaBody,
+  UploadImageEmpresa,
 } from './dto/empresa.dto';
 import Empresa from 'domain/entity/empresa/Empresa';
 import {
@@ -32,15 +33,13 @@ import {
 import { Request } from 'express';
 import { AuthEmpresaMiddleware } from 'src/middleware/auth.empresa.middleware';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import path, { join } from 'path';
-import * as fs from 'fs';
 
 @Controller('empresa')
 @ApiTags('Empresa')
 export class EmpresaController {
   private readonly logger: Logger = new Logger();
-  constructor(private readonly empresaService: EmpresaService) {}
+  constructor(
+    private readonly empresaService: EmpresaService) {}
 
   @Get('')
   @UseGuards(new AuthEmpresaMiddleware())
@@ -113,9 +112,12 @@ export class EmpresaController {
 
   @Post('/reset-password/:code')
   @ApiOperation({
-    summary: 'Rota de reset de senha da empresa'
+    summary: 'Rota de reset de senha da empresa',
   })
-  async esqueciSenha(@Param('code') code: number, @Body() data: EsqueciSenhaBody): Promise<any> {
+  async esqueciSenha(
+    @Param('code') code: number,
+    @Body() data: EsqueciSenhaBody,
+  ): Promise<any> {
     try {
       const compareCode = await this.empresaService.compareCode(code);
 
@@ -125,13 +127,16 @@ export class EmpresaController {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      
-      const updatePassword = await this.empresaService.esqueciSenha(compareCode.id_empresa, data.novaSenha)
+
+      const updatePassword = await this.empresaService.esqueciSenha(
+        compareCode.id_empresa,
+        data.novaSenha,
+      );
 
       return {
         code: HttpStatus.OK,
-        message: updatePassword
-      }
+        message: updatePassword,
+      };
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -208,66 +213,24 @@ export class EmpresaController {
 
   @Post('/upload/image')
   @UseGuards(new AuthEmpresaMiddleware())
-  @ApiConsumes('multipart/form-data')
-  @ApiBearerAuth()
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        image: { type: 'file', title: 'image para upload', required: ['true'] },
-      },
-    },
-  })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './public/uploads',
-        filename(req, file, callback) {
-          const type = file.mimetype.replace('image/', '');
-          const fileName =
-            new Date().getTime() + btoa(file.originalname) + '.' + type;
-          callback(null, fileName);
-        },
-      }),
-    }),
-  )
-  @ApiOperation({
-    summary: 'Cadastrar imagem',
-  })
+  @ApiOperation({ summary: 'Cadastrar imagem' })
   async addImageEmpresa(
-    @UploadedFile() file: Express.Multer.File,
+    @Body() body: UploadImageEmpresa,
     @Req() req: Request,
   ): Promise<any> {
     try {
       const id = req.empresa.id;
-      const imagePath = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
-
       const empresaExist = await this.empresaService.findByIdEmpresa(id);
 
       if (!empresaExist) {
         throw new HttpException('Empresa não encontrada', HttpStatus.NOT_FOUND);
       }
 
-      if (
-        empresaExist &&
-        empresaExist.image_url &&
-        typeof empresaExist.image_url === 'string'
-      ) {
-        const oldImagePath = join(
-          './public/uploads',
-          empresaExist.image_url.split('/uploads/')[1],
-        );
-        try {
-          fs.unlinkSync(oldImagePath);
-        } catch (error) {
-          this.logger.warn(`Failed to delete old image: ${error.message}`);
-        }
-      }
-      await this.empresaService.addImageEmpresa(id, imagePath);
+      await this.empresaService.addImageEmpresa(id, body.image_url);
 
-      return { message: 'Imagem salva com sucesso', path: imagePath };
+      return { message: 'Imagem salva com sucesso', path: body.image_url };
     } catch (error) {
-      this.logger.error(error.message);
+      console.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
