@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientModule } from './v1/client/client.module';
 import { AuthModule } from './v1/auth/auth.module';
@@ -10,17 +10,12 @@ import { ResetCodeUserModule } from './v1/reset-code-user/reset-code-user.module
 import { DatabaseModule } from './database/database.module';
 import { VeiculoModule } from './v1/veiculo/veiculo.module';
 import { MailModule } from './v1/mail/mail.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { ResetCodeEmpresaModule } from './v1/reset-code-empresa/reset-code-empresa.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: './public/uploads',
-      serveRoot: '/uploads',
     }),
     DatabaseModule,
     ClientModule,

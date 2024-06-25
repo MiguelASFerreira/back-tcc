@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, isNotEmpty } from 'class-validator';
 
 export class CreateEmpresaBody {
   @ApiProperty()
@@ -63,7 +63,8 @@ export class DeleteContrato {
 }
 
 export class UploadImageEmpresa {
-  
+  @ApiProperty()
+  image_url: string;
 }
 
 export class EsqueciSenhaBody {

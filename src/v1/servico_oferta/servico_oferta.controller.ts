@@ -11,7 +11,7 @@ import {
   Query,
   Delete,
   Patch,
-  Param
+  Param,
 } from '@nestjs/common';
 import { ServicoOfertaService } from './servico_oferta.service';
 import {
@@ -26,6 +26,7 @@ import { ServicoOferta } from 'domain/entity/servico_oferta/ServicoOferta';
 import { AuthEmpresaMiddleware } from 'src/middleware/auth.empresa.middleware';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ServicoService } from '../servico/servico.service';
+import { EmpresaService } from '../empresa/empresa.service';
 
 @Controller('servico-oferta')
 @ApiTags('Seviço Oferta')
@@ -34,6 +35,7 @@ export class ServicoOfertaController {
   constructor(
     private readonly servicoOfertaService: ServicoOfertaService,
     private readonly servicoService: ServicoService,
+    private readonly empresaService: EmpresaService,
   ) {}
 
   @Get('')
@@ -61,7 +63,22 @@ export class ServicoOfertaController {
   ): Promise<ServicoOferta> {
     try {
       const idEmpresa = req.empresa.id;
-      const servicoExists: ServicoExists[] = await this.servicoService.servicoEmpresa(idEmpresa);
+      const servicoExists: ServicoExists[] =
+        await this.servicoService.servicoEmpresa(idEmpresa);
+
+      const empresaExist = await this.empresaService.findByIdEmpresa(idEmpresa);
+
+      if (!empresaExist) {
+        throw new HttpException('Empresa não encontrada', HttpStatus.NOT_FOUND);
+      } else if (
+        empresaExist.CAPACIDADE_MAXIMA === null &&
+        empresaExist.QUANTIDADE_VEICULOS === 0
+      ) {
+        throw new HttpException(
+          'Veículo necessário para o cadastro',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
 
       const servicoJaCadastrado = servicoExists.some((servico) => {
         return (
@@ -71,7 +88,10 @@ export class ServicoOfertaController {
       });
 
       if (servicoJaCadastrado) {
-        throw new HttpException('Este serviço já está cadastrado para esta empresa', 400);
+        throw new HttpException(
+          'Este serviço já está cadastrado para esta empresa',
+          400,
+        );
       } else {
         return await this.servicoOfertaService.createServicoOferta(
           idEmpresa,
@@ -90,10 +110,17 @@ export class ServicoOfertaController {
   @ApiOperation({
     summary: 'Atualizar servico oferta',
   })
-  async updateServicoOfertaEmpresa(@Req() req: Request, @Body() body: UpdateServicoOferta): Promise<any> {
+  async updateServicoOfertaEmpresa(
+    @Req() req: Request,
+    @Body() body: UpdateServicoOferta,
+  ): Promise<any> {
     try {
       const idEmpresa = req.empresa.id;
-      return await this.servicoOfertaService.updateServicoOfertaEmpresa(body.valor, idEmpresa, body.id_servico)
+      return await this.servicoOfertaService.updateServicoOfertaEmpresa(
+        body.valor,
+        idEmpresa,
+        body.id_servico,
+      );
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,10 +133,16 @@ export class ServicoOfertaController {
   @ApiOperation({
     summary: 'Deletar servico oferta',
   })
-  async deleteServicoOfertaEmpresa(@Req() req: Request, @Param('id_servico') id_servico: number): Promise<any> {
+  async deleteServicoOfertaEmpresa(
+    @Req() req: Request,
+    @Param('id_servico') id_servico: number,
+  ): Promise<any> {
     try {
       const idEmpresa = req.empresa.id;
-      return await this.servicoOfertaService.deleteServicoOfertaEmpresa(idEmpresa, id_servico)   
+      return await this.servicoOfertaService.deleteServicoOfertaEmpresa(
+        idEmpresa,
+        id_servico,
+      );
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
